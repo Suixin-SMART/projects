@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project name="tb-demo" default="dist" basedir=".">
+	<target name="init">
+		<!-- location of the *.java files -->
+		<property name="srcPath" value="./src" />
+		<!-- location of the *.class files -->
+		<property name="classPath" value="./class" />
+		<!-- location of the final jar -->
+		<property name="distPath" value="./dist" />
+		<!-- location of the documentation -->
+		<property name="docPath" value="./doc" />
+		<!-- name of the final jar -->
+		<property name="jarFile" value="tb-demo.jar" />
+		<!-- name of the manifest file -->
+		<property name="manifestFile" value="tb-demo.manifest" />
+
+		<!-- sets the property "classPath.exists" to true when classPath exists -->
+		<condition property="classPath.exists">
+			<and>
+				<available file="${classPath}" type="dir" />
+			</and>
+		</condition>
+
+		<!-- sets the property "distPath.exists" to true when distPath exists -->
+		<condition property="distPath.exists">
+			<and>
+				<available file="${distPath}" type="dir" />
+			</and>
+		</condition>
+
+		<!-- sets the property "docPath.exists" to true when docPath exists -->
+		<condition property="docPath.exists">
+			<and>
+				<available file="${docPath}" type="dir" />
+			</and>
+		</condition>
+	</target>
+
+	<!-- Makes the classPath -->
+	<target name="makeClassPath" depends="init" unless="classPath.exists">
+		<mkdir dir="${classPath}" />
+	</target>
+
+	<!-- Makes the distPath -->
+	<target name="makeDistPath" depends="init" unless="distPath.exists">
+		<mkdir dir="${distPath}" />
+	</target>
+
+	<!-- Makes the docPath -->
+	<target name="makeDocPath" depends="init" unless="docPath.exists">
+		<mkdir dir="${docPath}" />
+	</target>
+
+	<!-- Cleans all binaries. -->
+	<target name="clean" depends="init">
+		<delete dir="${classPath}" />
+		<delete dir="${distPath}" />
+		<delete dir="${docPath}" />
+		<delete>
+			<fileset dir="." defaultexcludes="false" includes="**/*~" />
+		</delete>
+	</target>
+
+	<!-- Compile the java source code. -->
+	<target name="makeClass" depends="makeClassPath">
+		<javac srcdir="${srcPath}" destdir="${classPath}" source="1.5" target="1.5" deprecation="on" optimize="on" listfiles="on" debug="on" encoding="UTF-8">
+		</javac>
+	</target>
+
+	<!-- Makes the jar file. -->
+	<target name="dist" depends="makeClass,makeDistPath">
+		<jar destfile="${distPath}/${jarFile}" compress="false" update="true" index="true" basedir="${classPath}" manifest="${manifestFile}" />
+	</target>
+
+	<!-- Makes the documentation. -->
+	<target name="doc" depends="makeDocPath">
+		<javadoc sourcepath="${srcPath}" destdir="${docPath}" packagenames="*" version="yes" author="yes" private="yes" charset="UTF-8" classpath="${distPath}/${jarFile}" windowtitle="tb-demo API Documentation">
+			<link href="java.sun.com/j2se/1.5.0/docs/api/" />
+		</javadoc>
+	</target>
+	<target name="run" depends="dist">
+		<echo message=" -- running ${distPath}/${jarFile}" />
+		<java fork="true" failonerror="true" maxmemory="128m" jar="${distPath}/${jarFile}">
+		</java>
+	</target>
+</project>
