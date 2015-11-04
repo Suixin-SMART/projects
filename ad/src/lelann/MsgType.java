@@ -1,4 +1,6 @@
 package lelann;
 public enum MsgType {
-    JETON;
+    REGISTER,
+    END_REGISTER,
+    TOKEN;
 }

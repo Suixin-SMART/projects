@@ -4,51 +4,74 @@ import gui.Forme;
 import java.util.LinkedList;
 
 public class SyncMessage extends Message {
-    
+
     MsgType type;
     int proc;
+    int procTarget;
     LinkedList<Forme> forme;
 
     public SyncMessage() {}
-    
-    public SyncMessage( MsgType t, LinkedList<Forme> forme, int p ) {
-	
-	type = t;
-	this.forme = forme;
-	proc = p;
+
+    // Message REGISTER & TOKEN
+    public SyncMessage( MsgType type, int proc) {
+        this.type = type;
+        this.proc = proc;
     }
-    
+
+    // Message END_REGISTER
+    public SyncMessage( MsgType type, int proc, int procTarget) {
+        this.type = type;
+        this.proc = proc;
+        this.procTarget = procTarget;
+    }
+
+    // Message FORME
+    public SyncMessage( MsgType t, LinkedList<Forme> forme, int p ) {
+
+        type = t;
+        this.forme = forme;
+        proc = p;
+    }
+
+    // Get Message Type
     public MsgType getMsgType() {
 
-	return type;
+        return type;
     }
 
-    public LinkedList<Forme> getMsgForme() {
-
-	return forme;
-    }
-
+    // Get numero de processus
     public int getMsgProc() {
 
-	return proc;
+        return proc;
     }
-    
+
+    // Get numero du processus Target
+    public int getMsgProcTarget() {
+        return procTarget;
+    }
+
+    // Get la forme envoyée
+    public LinkedList<Forme> getMsgForme() {
+
+        return forme;
+    }
+
     @Override
     public Message clone() {
-	return new SyncMessage();
+        return new SyncMessage();
     }
-    
-    @Override 
+
+    @Override
     public String toString() {
 
-	String r = type.toString() + "_" + proc;
-	return r;
+        String r = type.toString() + "_" + proc;
+        return r;
     }
 
-    @Override 
+    @Override
     public String getData() {
 
-	return this.toString();
+        return this.toString();
     }
 
 }

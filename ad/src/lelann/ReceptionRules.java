@@ -5,33 +5,40 @@ import visidia.simulation.process.messages.Door;
 
 // Reception thread
 public class ReceptionRules extends Thread {
-    
-    LeLannMutualExclusion algo;
-    
-    public ReceptionRules( LeLannMutualExclusion a ) {
-	
-	algo = a;
-    }
-    
-    public void run() {
-	
-	Door d = new Door();
 
-	while( true ) {
+	LeLannMutualExclusion algo;
 
-	    SyncMessage m = (SyncMessage) algo.recoit(d);
-	    int door = d.getNum();
+	public ReceptionRules( LeLannMutualExclusion a ) {
 
-	    switch (m.getMsgType()) {
-		
-	    case JETON :
-		algo.receiveJETON( m.getMsgForme(), m.getMsgProc(), door );
-		break;
-		
-	    default:
-		System.out.println("Error message type");
-	    }
+		algo = a;
 	}
-    }
+
+	public void run() {
+
+		Door d = new Door();
+
+		while( true ) {
+
+			SyncMessage m = (SyncMessage) algo.recoit(d);
+			int door = d.getNum();
+
+			switch (m.getMsgType()) {
+
+				case TOKEN :
+					algo.receiveTOKEN( m.getMsgProcTarget(), door );
+					break;
+				case REGISTER :
+					algo.receiveREGISTER( m.getMsgProc(), door );
+					break;
+				case END_REGISTER :
+					algo.receiveEND_REGISTER( m.getMsgProc(), m.getMsgProcTarget(), door );
+					break;
+
+
+				default:
+					System.out.println("Error message type");
+			}
+		}
+	}
 }
 
