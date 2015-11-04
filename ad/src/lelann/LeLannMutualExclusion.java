@@ -87,6 +87,8 @@ public class LeLannMutualExclusion extends Algorithm {
         displayRoutage();
         procNeighbor = (procId + 1) % totalProcessus;
 
+        System.out.println("PROC : " + procId + " a pour voisin : " + procNeighbor);
+
         if ( procId == 0 ) {
             token = false;
             SyncMessage tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
@@ -207,10 +209,11 @@ public class LeLannMutualExclusion extends Algorithm {
     // Rule 3 : receive TOKEN
     synchronized void receiveTOKEN( int p, int d)
     {
+        System.out.println("JETON : " + p);
         if (p == procId)
         {
             // Jeton pour moi !
-            if ( waitForCritical == true )
+            if ( waitForCritical )
             {
                 token = true;
                 displayState();

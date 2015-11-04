@@ -16,6 +16,7 @@ public class SyncMessage extends Message {
     public SyncMessage( MsgType type, int proc) {
         this.type = type;
         this.proc = proc;
+        this.procTarget = proc;
     }
 
     // Message END_REGISTER
