@@ -47,12 +47,18 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	/** Le trait courant. */
 	protected JSpinner spinnerTrait;
 
+	public boolean sectionCritique;
+
 	/**
-	 * Constructeur.
+	 * Constructeurs.
 	 */
 	public TableauBlancUI() {
-		super("Tableau blanc");
+		this("Tableau blanc");
+	}
 
+	public TableauBlancUI(String nom){
+		super(nom);
+		sectionCritique = false;
 		canvas = new TableauBlanc();
 
 		getContentPane().add(canvas, BorderLayout.CENTER);
@@ -150,6 +156,7 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	 *            Le numéro de forme.
 	 */
 	public void debutDessin(int numForme) {
+		sectionCritique = true;
 		for (int i = 0; i < boutons.length; i++)
 			boutons[i].getModel().setEnabled(false);
 		float trait = ((SpinnerNumberModel) spinnerTrait.getModel())
@@ -160,9 +167,9 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 			forme = new FormeRectangle(bg, fg, trait);
 			break;
 		}
-		if (forme != null)
+		if (forme != null) {
 			canvas.demarreSelection(forme, this);
-		else {
+		}else {
 			System.out.println("Je ne connais pas la forme #" + numForme);
 			for (int i = 0; i < boutons.length; i++)
 				boutons[i].getModel().setEnabled(true);

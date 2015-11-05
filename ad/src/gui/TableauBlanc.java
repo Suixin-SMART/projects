@@ -36,6 +36,10 @@ public class TableauBlanc extends JPanel {
 		super(true);
 	}
 
+	public LinkedList<Forme> getFormes(){
+		return formes;
+	}
+
 	/**
 	 * Méthode de dessin.
 	 * 

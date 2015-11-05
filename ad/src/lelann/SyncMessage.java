@@ -27,11 +27,10 @@ public class SyncMessage extends Message {
     }
 
     // Message FORME
-    public SyncMessage( MsgType t, LinkedList<Forme> forme, int p ) {
-
+    public SyncMessage( MsgType t, LinkedList<Forme> forme, int proc ) {
         type = t;
         this.forme = forme;
-        proc = p;
+        procTarget = proc;
     }
 
     // Get Message Type
