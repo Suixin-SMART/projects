@@ -28,7 +28,7 @@ public class ReceptionRules extends Thread {
 					algo.receiveTOKEN( m.getMsgProcTarget(), door );
 					break;
 				case FORME :
-					algo.receiveFORME( m.getMsgForme(), m.getMsgProcTarget(), door );
+					algo.receiveFORME( m.getMsgForme(), m.getMsgProc(), m.getMsgProcTarget(), door );
 					break;
 				case REGISTER :
 					algo.receiveREGISTER( m.getMsgProc(), door );

@@ -1,11 +1,14 @@
 package gui;
 
+import lelann.LeLannMutualExclusion;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -22,7 +25,6 @@ import javax.swing.SpinnerNumberModel;
  */
 public class TableauBlancUI extends JFrame implements ActionListener,
 		SelectionListener {
-
 
 	private static final long serialVersionUID = 2902412616548012434L;
 	
@@ -47,7 +49,12 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	/** Le trait courant. */
 	protected JSpinner spinnerTrait;
 
-	public boolean sectionCritique;
+	public boolean demandeSectionCritique;
+	public boolean inSectionCritique;
+
+	protected ActionEvent derniereAction;
+
+	public LeLannMutualExclusion algo;
 
 	/**
 	 * Constructeurs.
@@ -56,9 +63,15 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		this("Tableau blanc");
 	}
 
-	public TableauBlancUI(String nom){
+	public TableauBlancUI(String nom) {
+		this(nom,null);
+	}
+
+	public TableauBlancUI(String nom, LeLannMutualExclusion algo){
 		super(nom);
-		sectionCritique = false;
+		demandeSectionCritique = false;
+		inSectionCritique = false;
+		this.algo = algo;
 		canvas = new TableauBlanc();
 
 		getContentPane().add(canvas, BorderLayout.CENTER);
@@ -66,6 +79,14 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 
 		pack();
 		setVisible(true);
+	}
+
+	public boolean getDemandeSectionCritique(){
+		return demandeSectionCritique;
+	}
+
+	public boolean getInSectionCritique(){
+		return inSectionCritique;
 	}
 
 	/**
@@ -124,27 +145,37 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	 *            Description de l'évenement.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		String cmd = e.getActionCommand();
+		derniereAction = e;
+		String cmd = derniereAction.getActionCommand();
 		if (cmd.startsWith("select-")) {
-			int selected = -1;
-			int numBouton = Integer.parseInt(cmd.substring(7));
-			if (boutons[numBouton].getModel().isSelected())
-				selected = numBouton;
-			for (int i = 0; i < boutons.length; i++) {
-				boutons[i].getModel().setSelected(false);
-			}
-
-			if (selected > -1)
-				debutDessin(selected);
+			continuerSectionCritique();
 		} else if (cmd.startsWith("setcolor-")) {
 			if (cmd.equals("setcolor-bg")) {
 				bg = JColorChooser.showDialog(this,
 						"Nouvelle couleur d'arrière plan", bg);
-				((JComponent) e.getSource()).setForeground(bg);
+				((JComponent) derniereAction.getSource()).setForeground(bg);
 			} else {
 				fg = JColorChooser.showDialog(this,
 						"Nouvelle couleur d'avant plan", fg);
-				((JComponent) e.getSource()).setForeground(fg);
+				((JComponent) derniereAction.getSource()).setForeground(fg);
+			}
+		}
+	}
+
+	public void continuerSectionCritique(){
+		demandeSectionCritique = true;
+		int selected = -1;
+		String cmd = derniereAction.getActionCommand();
+		int numBouton = Integer.parseInt(cmd.substring(7));
+		if (boutons[numBouton].getModel().isSelected())
+			selected = numBouton;
+		for (int i = 0; i < boutons.length; i++) {
+			boutons[i].getModel().setSelected(false);
+		}
+		if (selected > -1) {
+			if (inSectionCritique) {
+				demandeSectionCritique = false;
+				debutDessin(selected);
 			}
 		}
 	}
@@ -156,7 +187,6 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	 *            Le numéro de forme.
 	 */
 	public void debutDessin(int numForme) {
-		sectionCritique = true;
 		for (int i = 0; i < boutons.length; i++)
 			boutons[i].getModel().setEnabled(false);
 		float trait = ((SpinnerNumberModel) spinnerTrait.getModel())
@@ -199,7 +229,12 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		// On devrais normalement passer par le groupe
 		// ici on court-circuite le groupe
 		// et on delivre directement la forme
-		canvas.delivreForme(forme);
+		synchronized (algo.bla) {
+			inSectionCritique = false;
+
+			canvas.delivreForme(forme);
+			algo.bla.notify();
+		}
 	}
 
 	class ActionForme extends AbstractAction {

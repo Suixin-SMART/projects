@@ -9,8 +9,8 @@ public class DisplayFrame extends TableauBlancUI{
 
 	int size;
 
-	public DisplayFrame(int proc) {
-		super("Tableau blanc " + proc);
+	public DisplayFrame(int proc, LeLannMutualExclusion algo) {
+		super("Tableau blanc " + proc, algo);
 	}
 
 	public void display(String s) {

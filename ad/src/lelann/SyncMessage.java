@@ -8,7 +8,7 @@ public class SyncMessage extends Message {
     MsgType type;
     int proc;
     int procTarget;
-    LinkedList<Forme> forme;
+    Forme forme;
 
     public SyncMessage() {}
 
@@ -27,10 +27,11 @@ public class SyncMessage extends Message {
     }
 
     // Message FORME
-    public SyncMessage( MsgType t, LinkedList<Forme> forme, int proc ) {
+    public SyncMessage( MsgType t, Forme forme, int initiateur, int procTarget) {
         type = t;
         this.forme = forme;
-        procTarget = proc;
+        this.procTarget = procTarget;
+        this.proc = initiateur;
     }
 
     // Get Message Type
@@ -51,7 +52,7 @@ public class SyncMessage extends Message {
     }
 
     // Get la forme envoyée
-    public LinkedList<Forme> getMsgForme() {
+    public Forme getMsgForme() {
 
         return forme;
     }
