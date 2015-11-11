@@ -1,7 +1,6 @@
-package lelann;
+package commun;
 import visidia.simulation.process.messages.Message;
 import gui.Forme;
-import java.util.LinkedList;
 
 public class SyncMessage extends Message {
 
@@ -9,21 +8,30 @@ public class SyncMessage extends Message {
     int proc;
     int procTarget;
     Forme forme;
+    int horloge;
 
     public SyncMessage() {}
 
-    // Message REGISTER & TOKEN
+    // Message REGISTER, TOKEN
     public SyncMessage( MsgType type, int proc) {
         this.type = type;
         this.proc = proc;
         this.procTarget = proc;
     }
 
-    // Message END_REGISTER
+    // Message END_REGISTER & REL
     public SyncMessage( MsgType type, int proc, int procTarget) {
         this.type = type;
         this.proc = proc;
         this.procTarget = procTarget;
+    }
+
+    // Message REQ
+    public SyncMessage( MsgType type, int proc, int procTarget, int parameter) {
+        this.type = type;
+        this.proc = proc;
+        this.procTarget = procTarget;
+        this.horloge = parameter;
     }
 
     // Message FORME
@@ -44,6 +52,10 @@ public class SyncMessage extends Message {
     public int getMsgProc() {
 
         return proc;
+    }
+
+    public int getMsgHorloge(){
+        return horloge;
     }
 
     // Get numero du processus Target

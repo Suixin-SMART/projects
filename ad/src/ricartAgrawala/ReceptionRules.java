@@ -1,14 +1,14 @@
-package lelann;
+package ricartAgrawala;
 // Visidia imports
-import commun.*;
 import visidia.simulation.process.messages.Door;
+import commun.*;
 
 // Reception thread
 public class ReceptionRules extends Thread {
 
-	LeLannMutualExclusion algo;
+	RicartAgrawalaMutualExclusion algo;
 
-	public ReceptionRules( LeLannMutualExclusion a ) {
+	public ReceptionRules( RicartAgrawalaMutualExclusion a ) {
 
 		algo = a;
 	}
@@ -24,8 +24,11 @@ public class ReceptionRules extends Thread {
 
 			switch (m.getMsgType()) {
 
-				case TOKEN :
-					algo.receiveTOKEN( m.getMsgProcTarget(), door );
+				case REQ :
+					algo.receiveREQ( m.getMsgProc(),m.getMsgProcTarget(), m.getMsgHorloge(), door );
+					break;
+				case REL :
+					algo.receiveREL(m.getMsgProc(), m.getMsgProcTarget(), door );
 					break;
 				case FORME :
 					algo.receiveFORME( m.getMsgForme(), m.getMsgProc(), m.getMsgProcTarget(), door );

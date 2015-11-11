@@ -1,4 +1,4 @@
-package lelann;
+package commun;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

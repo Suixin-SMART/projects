@@ -52,9 +52,9 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	public boolean demandeSectionCritique;
 	public boolean inSectionCritique;
 
-	protected ActionEvent derniereAction;
+	protected Object synch;
 
-	public LeLannMutualExclusion algo;
+	protected ActionEvent derniereAction;
 
 	/**
 	 * Constructeurs.
@@ -67,11 +67,11 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		this(nom,null);
 	}
 
-	public TableauBlancUI(String nom, LeLannMutualExclusion algo){
+	public TableauBlancUI(String nom, Object synch){
 		super(nom);
 		demandeSectionCritique = false;
 		inSectionCritique = false;
-		this.algo = algo;
+		this.synch = synch;
 		canvas = new TableauBlanc();
 
 		getContentPane().add(canvas, BorderLayout.CENTER);
@@ -148,6 +148,7 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		derniereAction = e;
 		String cmd = derniereAction.getActionCommand();
 		if (cmd.startsWith("select-")) {
+			demandeSectionCritique = true;
 			continuerSectionCritique();
 		} else if (cmd.startsWith("setcolor-")) {
 			if (cmd.equals("setcolor-bg")) {
@@ -163,7 +164,6 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	}
 
 	public void continuerSectionCritique(){
-		demandeSectionCritique = true;
 		int selected = -1;
 		String cmd = derniereAction.getActionCommand();
 		int numBouton = Integer.parseInt(cmd.substring(7));
@@ -174,7 +174,6 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		}
 		if (selected > -1) {
 			if (inSectionCritique) {
-				demandeSectionCritique = false;
 				debutDessin(selected);
 			}
 		}
@@ -229,11 +228,11 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		// On devrais normalement passer par le groupe
 		// ici on court-circuite le groupe
 		// et on delivre directement la forme
-		synchronized (algo.bla) {
+		synchronized (synch) {
 			inSectionCritique = false;
 
 			canvas.delivreForme(forme);
-			algo.bla.notify();
+			synch.notify();
 		}
 	}
 

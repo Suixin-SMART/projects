@@ -1,5 +1,5 @@
 
-package lelann;
+package commun;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -9,8 +9,8 @@ public class DisplayFrame extends TableauBlancUI{
 
 	int size;
 
-	public DisplayFrame(int proc, LeLannMutualExclusion algo) {
-		super("Tableau blanc " + proc, algo);
+	public DisplayFrame(int proc, Object synch) {
+		super("Tableau blanc " + proc, synch);
 	}
 
 	public void display(String s) {
