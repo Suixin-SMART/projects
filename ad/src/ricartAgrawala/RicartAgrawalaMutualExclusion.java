@@ -38,7 +38,7 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     // State display frame
     DisplayFrame tableau;
 
-    public Object synch = new Object();
+    private Object synch = new Object();
 
     int routeur[];
     boolean initRouteur[];
@@ -117,7 +117,7 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
 
         log.info("Fin table de routage");
 
-        tableau = new DisplayFrame(procId, this);
+        tableau = new DisplayFrame(procId, synch);
 
         displayRoutage();
 
@@ -141,19 +141,20 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
             tableau.inSectionCritique = true;
             synchronized (synch) {
                 displayState();
-                tableau.demandeSectionCritique = false;
                 tableau.continuerSectionCritique();
 
                 try {
+                    System.out.println("avant wait!");
                     synch.wait();
+                    System.out.println("apres Wait!");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-
+            tableau.demandeSectionCritique = false;
             // Release critical use
-            log.info("Fin de Section Critique");
             endCriticalUse();
+            log.info("Fin de Section Critique");
         }
 
 
@@ -313,6 +314,7 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     // Rule 3 :
     void endCriticalUse()
     {
+        System.out.println("endCriticalUse!");
         R = false;
         SyncMessage tm;
 

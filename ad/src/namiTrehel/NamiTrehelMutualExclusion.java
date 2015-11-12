@@ -1,18 +1,25 @@
-package lelann;
+package namiTrehel;
 
 // Java imports
-import java.io.*;
-import java.util.LinkedList;
-import java.util.logging.*;
 
-import commun.*;
-import gui.*;
-
-// Visidia imports
+import commun.DisplayFrame;
+import commun.MsgType;
+import commun.SingleLineFormatter;
+import commun.SyncMessage;
+import gui.Forme;
 import visidia.simulation.process.algorithm.Algorithm;
 import visidia.simulation.process.messages.Door;
 
-public class LeLannMutualExclusion extends Algorithm {
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+// Visidia imports
+
+public class NamiTrehelMutualExclusion extends Algorithm {
 
     // All nodes data
     int procId;
@@ -20,7 +27,13 @@ public class LeLannMutualExclusion extends Algorithm {
 
     int nbNeighbors;
     int totalProcessus;
-    boolean token = false;
+
+    //dataAlgo
+    int H = 0;
+    int HSC = 0;
+    boolean R = false;
+    boolean  relDiffere[];
+    int nREL = 0;
 
     // Reception thread
     ReceptionRules rr = null;
@@ -33,17 +46,17 @@ public class LeLannMutualExclusion extends Algorithm {
     boolean initRouteur[];
     boolean initialized = true;
 
-    private static final Logger log = Logger.getLogger( LeLannMutualExclusion.class.getName() );
+    private static final Logger log = Logger.getLogger( NamiTrehelMutualExclusion.class.getName() );
 
 
     public String getDescription() {
 
-        return ("LeLann Algorithm for Mutual Exclusion");
+        return ("Ricart-Agrawala Algorithm for Mutual Exclusion");
     }
 
     @Override
     public Object clone() {
-        return new LeLannMutualExclusion();
+        return new NamiTrehelMutualExclusion();
     }
 
     //
@@ -55,7 +68,7 @@ public class LeLannMutualExclusion extends Algorithm {
 
         Handler handler = null;
         try {
-            handler = new FileHandler( "LeLann_"+procId+".log");
+            handler = new FileHandler( "RicartAgrawala_"+procId+".log");
             log.setLevel(Level.INFO);
             SingleLineFormatter formatter = new SingleLineFormatter();
             handler.setFormatter(formatter);
@@ -75,11 +88,14 @@ public class LeLannMutualExclusion extends Algorithm {
 
         log.info("Process " + procId + " as " + nbNeighbors + " neighbors");
 
+        relDiffere = new boolean[totalProcessus];
         routeur = new int[totalProcessus];
         initRouteur = new boolean[totalProcessus];
         for(int i = 0;i<totalProcessus;i++){
             routeur[i] = -1;
             initRouteur[i] = false;
+            relDiffere[i] = false;
+
         }
         routeur[procId] = 0;
         initRouteur[procId] = true;
@@ -107,28 +123,27 @@ public class LeLannMutualExclusion extends Algorithm {
 
         displayRoutage();
 
-
-        log.info("Debut de la circulation du token");
-
-
-        if ( procId == 0 ) {
-            log.info("Processus initiateur");
-            token = false;
-            SyncMessage tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
-            boolean sent = sendTo( routeur[procNeighbor], tm );
-        }
-
         while( true ) {
 
             // Try to access critical section
-            System.out.println("Section critique: " + tableau.demandeSectionCritique);
-            askForCritical();
+            //System.out.println("Section critique: " + tableau.demandeSectionCritique);
 
+
+            while (!tableau.demandeSectionCritique){
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }
+            }
+
+            askForCritical();
             // Access critical
             log.info("Entree en Section Critique");
             tableau.inSectionCritique = true;
             synchronized (synch) {
                 displayState();
+                tableau.demandeSectionCritique = false;
                 tableau.continuerSectionCritique();
 
                 try {
@@ -137,7 +152,7 @@ public class LeLannMutualExclusion extends Algorithm {
                     e.printStackTrace();
                 }
             }
-            tableau.demandeSectionCritique = false;
+
             // Release critical use
             log.info("Fin de Section Critique");
             endCriticalUse();
@@ -153,13 +168,18 @@ public class LeLannMutualExclusion extends Algorithm {
     // Rule 1 : ask for critical section
     synchronized void askForCritical()
     {
-
-      while( !token )
-      {
-          displayState();
-          try { this.wait(); } catch( InterruptedException ie) {}
-      }
-
+        R = true;
+        HSC = H+1;
+        nREL = totalProcessus;
+        SyncMessage message;
+        for (int i = 0; i < totalProcessus; i++){
+            message = new SyncMessage(MsgType.REQ, procId, i, HSC);
+            sendTo(routeur[i], message);
+        }
+        while( 0 < nREL )
+        {
+            try { this.wait(); } catch( InterruptedException ie) {}
+        }
     }
 
     // Rule 1 : receive REGISTER
@@ -224,32 +244,45 @@ public class LeLannMutualExclusion extends Algorithm {
         }
     }
 
-    // Rule 3 : receive TOKEN
-    synchronized void receiveTOKEN( int p, int d)
+    // Rule 3.0 : receive REQ
+    synchronized void receiveREQ( int pAuth,int pTarget, int H_P, int d)
     {
-        System.out.println("JETON : " + p);
-
-        if (p == procId)
+        if (pTarget == procId)
         {
-            // Jeton pour moi !
-            if ( tableau.getDemandeSectionCritique() )
-            {
-                System.out.println("Proc: " + procId + " got token!");
-                token = true;
-                displayState();
-                notify();
+            System.out.println("REQ : " + pTarget);
+
+            if (H < H_P) {
+                H = H_P;
             }
-            else
-            {
-                // Forward token to successor
-                SyncMessage tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
-                boolean sent = sendTo( routeur[procNeighbor], tm );
+            H++;
+            if (R && ((HSC < H_P) || ((HSC == H_P) && pTarget < pAuth))){
+                relDiffere[pAuth] = true;
+            }else{
+                SyncMessage message = new SyncMessage(MsgType.REL, procId, pAuth);
+                sendTo(routeur[pAuth], message);
             }
         }
         else
         {
-            SyncMessage tm = new SyncMessage(MsgType.TOKEN, p);
-            sendTo( routeur[p], tm );
+            SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, pTarget, H_P);
+            sendTo(routeur[pTarget], message);
+        }
+    }
+
+    // Rule 3 : receive REL
+    synchronized void receiveREL( int procAuth, int procTarget, int d)
+    {
+        System.out.println("REL : " + procTarget);
+
+        if (procTarget == procId)
+        {
+            nREL--;
+            this.notify();
+        }
+        else
+        {
+            SyncMessage message = new SyncMessage(MsgType.REL, procAuth, procTarget);
+            sendTo(routeur[procTarget], message);
         }
     }
 
@@ -260,7 +293,6 @@ public class LeLannMutualExclusion extends Algorithm {
 
         if (procId == pTarget) {
             LinkedList<Forme> canvasList = tableau.canvas.getFormes();
-            boolean changed = false;
             if (!canvasList.contains(forme)) {
                 System.out.println("-------> Updated Canvas!!! ProcID: " + procId + " Vers: " + pTarget);
                 tableau.canvas.delivreForme(forme);
@@ -283,24 +315,25 @@ public class LeLannMutualExclusion extends Algorithm {
     // Rule 3 :
     void endCriticalUse()
     {
-      token = false;
+        R = false;
         SyncMessage tm;
 
         if (tableau.canvas.getFormes().size() > 0) {
             for (int i = 0; i < totalProcessus; i++) {
                 tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, procNeighbor);
                 sendTo(routeur[procNeighbor], tm);
+                if (relDiffere[i]){
+                    tm = new SyncMessage(MsgType.REL, procId, i);
+                    sendTo( routeur[i], tm );
+                    relDiffere[i] = false;
+                }
             }
         }
-
-
-        tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
-        sendTo( routeur[procNeighbor], tm );
 
     }
 
     // Access to receive function
-    public SyncMessage recoit ( Door d )
+    public SyncMessage recoit (Door d )
     {
         SyncMessage sm = (SyncMessage)receive( d );
         return sm;
