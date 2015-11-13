@@ -29,11 +29,10 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     int totalProcessus;
 
     //dataAlgo
-    int H = 0;
-    int HSC = 0;
-    boolean R = false;
-    boolean  relDiffere[];
-    int nREL = 0;
+    int owner = -1;
+    int next = -1;
+    boolean jeton = false;
+    boolean  SC = false;
 
     // Reception thread
     ReceptionRules rr = null;
@@ -51,7 +50,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
 
     public String getDescription() {
 
-        return ("Ricart-Agrawala Algorithm for Mutual Exclusion");
+        return ("Nami-Trehel Algorithm for Mutual Exclusion");
     }
 
     @Override
@@ -68,7 +67,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
 
         Handler handler = null;
         try {
-            handler = new FileHandler( "RicartAgrawala_"+procId+".log");
+            handler = new FileHandler( "Nami-Trehel_"+procId+".log");
             log.setLevel(Level.INFO);
             SingleLineFormatter formatter = new SingleLineFormatter();
             handler.setFormatter(formatter);
@@ -88,14 +87,11 @@ public class NamiTrehelMutualExclusion extends Algorithm {
 
         log.info("Process " + procId + " as " + nbNeighbors + " neighbors");
 
-        relDiffere = new boolean[totalProcessus];
         routeur = new int[totalProcessus];
         initRouteur = new boolean[totalProcessus];
         for(int i = 0;i<totalProcessus;i++){
             routeur[i] = -1;
             initRouteur[i] = false;
-            relDiffere[i] = false;
-
         }
         routeur[procId] = 0;
         initRouteur[procId] = true;
@@ -104,6 +100,14 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         {
             SyncMessage message = new SyncMessage(MsgType.REGISTER, procId);
             sendTo(i, message);
+        }
+
+        //initialisation Algorithmique
+        if (0 == procId){
+            jeton = true;
+            owner = -1;
+        }else{
+            owner = 0;
         }
 
         log.info("Debut table de routage");
@@ -168,17 +172,14 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 1 : ask for critical section
     synchronized void askForCritical()
     {
-        R = true;
-        HSC = H+1;
-        nREL = totalProcessus;
-        SyncMessage message;
-        for (int i = 0; i < totalProcessus; i++){
-            message = new SyncMessage(MsgType.REQ, procId, i, HSC);
-            sendTo(routeur[i], message);
-        }
-        while( 0 < nREL )
-        {
-            try { this.wait(); } catch( InterruptedException ie) {}
+        SC = true;
+        if (-1 != owner){
+            SyncMessage message = new SyncMessage(MsgType.REQ, procId, owner);
+            sendTo(routeur[owner], message);
+            while( !jeton )
+            {
+                try { this.wait(); } catch( InterruptedException ie) {}
+            }
         }
     }
 
@@ -245,43 +246,48 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     }
 
     // Rule 3.0 : receive REQ
-    synchronized void receiveREQ( int pAuth,int pTarget, int H_P, int d)
+    synchronized void receiveREQ( int pAuth,int pTarget, int parameter, int d)
     {
         if (pTarget == procId)
         {
             System.out.println("REQ : " + pTarget);
 
-            if (H < H_P) {
-                H = H_P;
-            }
-            H++;
-            if (R && ((HSC < H_P) || ((HSC == H_P) && pTarget < pAuth))){
-                relDiffere[pAuth] = true;
+            //TODO: la conmbinaison des parametres de messages sont incorrect, les messages bouclent entre deux procs.
+
+            if (-1 == owner) {
+                if (SC){
+                    next = parameter;
+                }else{
+                    jeton = false;
+                    SyncMessage message = new SyncMessage(MsgType.TOKEN, procId, parameter);
+                    sendTo(routeur[parameter], message);
+                }
             }else{
-                SyncMessage message = new SyncMessage(MsgType.REL, procId, pAuth);
-                sendTo(routeur[pAuth], message);
+                SyncMessage message = new SyncMessage(MsgType.REQ, procId, owner, parameter);
+                sendTo(routeur[owner], message);
             }
+            owner = parameter;
         }
         else
         {
-            SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, pTarget, H_P);
+            SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, pTarget, parameter);
             sendTo(routeur[pTarget], message);
         }
     }
 
-    // Rule 3 : receive REL
-    synchronized void receiveREL( int procAuth, int procTarget, int d)
+    // Rule 3 : receive JETON
+    synchronized void receiveJETON( int procAuth, int procTarget, int d)
     {
-        System.out.println("REL : " + procTarget);
+        System.out.println("JETON : " + procTarget);
 
         if (procTarget == procId)
         {
-            nREL--;
+            jeton = true;
             this.notify();
         }
         else
         {
-            SyncMessage message = new SyncMessage(MsgType.REL, procAuth, procTarget);
+            SyncMessage message = new SyncMessage(MsgType.TOKEN, procAuth, procTarget);
             sendTo(routeur[procTarget], message);
         }
     }
@@ -315,17 +321,18 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 3 :
     void endCriticalUse()
     {
-        R = false;
+        SC = false;
         SyncMessage tm;
 
         if (tableau.canvas.getFormes().size() > 0) {
             for (int i = 0; i < totalProcessus; i++) {
                 tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, procNeighbor);
                 sendTo(routeur[procNeighbor], tm);
-                if (relDiffere[i]){
-                    tm = new SyncMessage(MsgType.REL, procId, i);
-                    sendTo( routeur[i], tm );
-                    relDiffere[i] = false;
+                if (-1 != next){
+                    tm = new SyncMessage(MsgType.TOKEN, procId, next);
+                    sendTo( routeur[next], tm );
+                    next = -1;
+                    jeton = false;
                 }
             }
         }

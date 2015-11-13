@@ -28,8 +28,8 @@ public class ReceptionRules extends Thread {
 				case REQ :
 					algo.receiveREQ( m.getMsgProc(),m.getMsgProcTarget(), m.getMsgHorloge(), door );
 					break;
-				case REL :
-					algo.receiveREL(m.getMsgProc(), m.getMsgProcTarget(), door );
+				case TOKEN :
+					algo.receiveJETON(m.getMsgProc(), m.getMsgProcTarget(), door );
 					break;
 				case FORME :
 					algo.receiveFORME( m.getMsgForme(), m.getMsgProc(), m.getMsgProcTarget(), door );
