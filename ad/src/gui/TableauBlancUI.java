@@ -230,13 +230,8 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		// et on delivre directement la forme
 		synchronized (synch) {
 			inSectionCritique = false;
-
-
-			System.out.println("Avant notify & delivreForme!");
 			canvas.delivreForme(forme);
-			System.out.println("Avant notify!");
 			synch.notify();
-			System.out.println("Apres notify!");
 		}
 	}
 

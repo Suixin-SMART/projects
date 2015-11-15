@@ -172,10 +172,12 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 1 : ask for critical section
     synchronized void askForCritical()
     {
+        System.out.println("Asked SC! Token owner: " + owner);
         SC = true;
         if (-1 != owner){
-            SyncMessage message = new SyncMessage(MsgType.REQ, procId, owner);
+            SyncMessage message = new SyncMessage(MsgType.REQ, procId, owner, next);
             sendTo(routeur[owner], message);
+            owner = -1;
             while( !jeton )
             {
                 try { this.wait(); } catch( InterruptedException ie) {}
@@ -246,31 +248,32 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     }
 
     // Rule 3.0 : receive REQ
-    synchronized void receiveREQ( int pAuth,int pTarget, int parameter, int d)
+    synchronized void receiveREQ( int pAuth,int pTarget, int parameterNextProc, int d)
     {
         if (pTarget == procId)
         {
-            System.out.println("REQ : " + pTarget);
+            System.out.println("REQ! Target: " + pTarget + " Auth: " + pAuth + " Parameter: " + parameterNextProc + " Owner: " + owner);
 
             //TODO: la conmbinaison des parametres de messages sont incorrect, les messages bouclent entre deux procs.
 
             if (-1 == owner) {
                 if (SC){
-                    next = parameter;
+                    next = parameterNextProc;
                 }else{
                     jeton = false;
-                    SyncMessage message = new SyncMessage(MsgType.TOKEN, procId, parameter);
-                    sendTo(routeur[parameter], message);
+                    SyncMessage message = new SyncMessage(MsgType.TOKEN, procId, pAuth);
+                    sendTo(routeur[pAuth], message);
                 }
             }else{
-                SyncMessage message = new SyncMessage(MsgType.REQ, procId, owner, parameter);
+                SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, owner, parameterNextProc);
                 sendTo(routeur[owner], message);
             }
-            owner = parameter;
+            owner = parameterNextProc;
         }
         else
         {
-            SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, pTarget, parameter);
+            System.out.println("Transport REQ! Target: " + pTarget + " Auth: " + pAuth + " Parameter: " + parameterNextProc);
+            SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, pTarget, parameterNextProc);
             sendTo(routeur[pTarget], message);
         }
     }
@@ -278,15 +281,15 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 3 : receive JETON
     synchronized void receiveJETON( int procAuth, int procTarget, int d)
     {
-        System.out.println("JETON : " + procTarget);
-
         if (procTarget == procId)
         {
+            System.out.println("JETON : Target: " + procTarget + " Auth: " + procAuth);
             jeton = true;
             this.notify();
         }
         else
         {
+            System.out.println("Transport JETON : Target: " + procTarget + " Auth: " + procAuth);
             SyncMessage message = new SyncMessage(MsgType.TOKEN, procAuth, procTarget);
             sendTo(routeur[procTarget], message);
         }
@@ -300,7 +303,6 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         if (procId == pTarget) {
             LinkedList<Forme> canvasList = tableau.canvas.getFormes();
             if (!canvasList.contains(forme)) {
-                System.out.println("-------> Updated Canvas!!! ProcID: " + procId + " Vers: " + pTarget);
                 tableau.canvas.delivreForme(forme);
             }
 
