@@ -84,7 +84,7 @@ public class LeLannMutualExclusion extends Algorithm {
         {
             SyncMessage message = new SyncMessage(MsgType.REGISTER, procId);
             sendTo(i, message);
-            log.info("Envoi END_REGISTER a " + i);
+            log.info("Envoi REGISTER a " + i);
         }
 
         log.info("Debut table de routage");
