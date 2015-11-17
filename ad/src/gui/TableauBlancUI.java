@@ -1,14 +1,11 @@
 package gui;
 
-import lelann.LeLannMutualExclusion;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -52,7 +49,7 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 	public boolean demandeSectionCritique;
 	public boolean inSectionCritique;
 
-	protected Object synch;
+	protected Object objectSync;
 
 	protected ActionEvent derniereAction;
 
@@ -67,11 +64,11 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		this(nom,null);
 	}
 
-	public TableauBlancUI(String nom, Object synch){
+	public TableauBlancUI(String nom, Object objectSync){
 		super(nom);
 		demandeSectionCritique = false;
 		inSectionCritique = false;
-		this.synch = synch;
+		this.objectSync = objectSync;
 		canvas = new TableauBlanc();
 
 		getContentPane().add(canvas, BorderLayout.CENTER);
@@ -228,10 +225,10 @@ public class TableauBlancUI extends JFrame implements ActionListener,
 		// On devrais normalement passer par le groupe
 		// ici on court-circuite le groupe
 		// et on delivre directement la forme
-		synchronized (synch) {
+		synchronized (objectSync) {
 			inSectionCritique = false;
 			canvas.delivreForme(forme);
-			synch.notify();
+			objectSync.notify();
 		}
 	}
 

@@ -7,12 +7,9 @@ import visidia.simulation.process.algorithm.Algorithm;
 import visidia.simulation.process.messages.Door;
 
 import java.io.IOException;
-import java.time.chrono.HijrahChronology;
 import java.util.LinkedList;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+
 import commun.*;
 
 // Visidia imports
@@ -30,7 +27,7 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     int H = 0;
     int HSC = 0;
     boolean R = false;
-    boolean  relDiffere[];
+    boolean tabRelDiffere[];
     int nREL = 0;
 
     // Reception thread
@@ -38,14 +35,12 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     // State display frame
     DisplayFrame tableau;
 
-    private Object synch = new Object();
+    private Object objectSync = new Object();
 
     int routeur[];
-    boolean initRouteur[];
     boolean initialized = true;
 
-    private static final Logger log = Logger.getLogger( RicartAgrawalaMutualExclusion.class.getName() );
-
+    private Logger log;
 
     public String getDescription() {
 
@@ -61,19 +56,7 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     // Nodes' code
     //
     @Override
-    public void init()
-    {
-
-        Handler handler = null;
-        try {
-            handler = new FileHandler( "RicartAgrawala_"+procId+".log");
-            log.setLevel(Level.INFO);
-            SingleLineFormatter formatter = new SingleLineFormatter();
-            handler.setFormatter(formatter);
-            Logger.getLogger("").addHandler(handler);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void init() {
 
         int speed = 4;
         procId = getId();
@@ -81,33 +64,41 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
         totalProcessus = getNetSize();
         procNeighbor = (procId + 1) % totalProcessus;
 
-        rr = new ReceptionRules( this );
+        log = Logger.getLogger("" + procId);
+
+        Handler handler = null;
+        try {
+            handler = new FileHandler("RicartAgrawala_" + procId + ".log");
+            log.setLevel(Level.INFO);
+            SimpleFormatter formatter = new SimpleFormatter();
+            handler.setFormatter(formatter);
+            Logger.getLogger("" + procId).addHandler(handler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        rr = new ReceptionRules(this);
         rr.start();
 
         log.info("Process " + procId + " as " + nbNeighbors + " neighbors");
 
-        relDiffere = new boolean[totalProcessus];
+        tabRelDiffere = new boolean[totalProcessus];
         routeur = new int[totalProcessus];
-        initRouteur = new boolean[totalProcessus];
-        for(int i = 0;i<totalProcessus;i++){
+        for (int i = 0; i < totalProcessus; i++) {
             routeur[i] = -1;
-            initRouteur[i] = false;
-            relDiffere[i] = false;
+            tabRelDiffere[i] = false;
 
         }
         routeur[procId] = 0;
-        initRouteur[procId] = true;
-        log.info("Envoi de message d'identification aux autres processus.");
-        for (int i = 0; i < nbNeighbors; i++)
-        {
+        for (int i = 0; i < nbNeighbors; i++) {
             SyncMessage message = new SyncMessage(MsgType.REGISTER, procId);
             sendTo(i, message);
+            log.info("Envoi END_REGISTER a " + i);
         }
 
         log.info("Debut table de routage");
 
-        while(initialized)
-        {
+        while (initialized) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -117,17 +108,14 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
 
         log.info("Fin table de routage");
 
-        tableau = new DisplayFrame(procId, synch);
+        tableau = new DisplayFrame(procId, objectSync);
 
         displayRoutage();
 
-        while( true ) {
+        while (true) {
 
             // Try to access critical section
-            //System.out.println("Section critique: " + tableau.demandeSectionCritique);
-
-
-            while (!tableau.demandeSectionCritique){
+            while (!tableau.demandeSectionCritique) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -139,14 +127,12 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
             // Access critical
             log.info("Entree en Section Critique");
             tableau.inSectionCritique = true;
-            synchronized (synch) {
+            synchronized (objectSync) {
                 displayState();
                 tableau.continuerSectionCritique();
 
                 try {
-                    System.out.println("avant wait!");
-                    synch.wait();
-                    System.out.println("apres Wait!");
+                    objectSync.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -165,167 +151,152 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     //-------------------
 
     // Rule 1 : ask for critical section
-    synchronized void askForCritical()
-    {
+    synchronized void askForCritical() {
+        log.info("Demande de Section Critique");
         R = true;
-        HSC = H+1;
+        HSC = H + 1;
         nREL = totalProcessus;
         SyncMessage message;
-        for (int i = 0; i < totalProcessus; i++){
+        for (int i = 0; i < totalProcessus; i++) {
             message = new SyncMessage(MsgType.REQ, procId, i, HSC);
             sendTo(routeur[i], message);
         }
-        while( 0 < nREL )
-        {
-            try { this.wait(); } catch( InterruptedException ie) {}
-        }
-    }
-
-    // Rule 1 : receive REGISTER
-    synchronized void receiveREGISTER( int p, int d)
-    {
-
-        if (-1 == routeur[p])
-        {
-            routeur[p] = d;
-            for (int i = 0; i < nbNeighbors; i++)
-            {
-                SyncMessage message = new SyncMessage(MsgType.REGISTER, p);
-                sendTo(i, message);
-            }
-
-            int nbNonInitialized = 0;
-            for (int i = 0; i < totalProcessus; i++)
-            {
-                if (-1 != routeur[i])
-                {
-                    nbNonInitialized++;
-                }
-            }
-
-            if (nbNonInitialized == totalProcessus)
-            {
-                // Send End to All
-                for (int i = 0; i < totalProcessus; i++) {
-                    SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procId, i);
-                    sendTo(routeur[i], message);
-                }
+        while (0 < nREL) {
+            try {
+                this.wait();
+            } catch (InterruptedException ie) {
             }
         }
     }
 
     // Rule 2 : receive REGISTER
-    synchronized void receiveEND_REGISTER( int p, int procTarget, int d)
-    {
-        if (procTarget == procId)
-        {
-            initRouteur[p] = true;
+    synchronized void receiveREGISTER(int procAuteur, int door) {
+        log.info("Recu REGISTER de " + procAuteur);
+        if (-1 == routeur[procAuteur]) {
+            routeur[procAuteur] = door;
+            for (int i = 0; i < nbNeighbors; i++) {
+                SyncMessage message = new SyncMessage(MsgType.REGISTER, procAuteur);
+                sendTo(i, message);
+                log.info("Envoi REGISTER a " + i);
+            }
+
+            int nbNonInitialized = 0;
+            for (int i = 0; i < totalProcessus; i++) {
+                if (-1 != routeur[i]) {
+                    nbNonInitialized++;
+                }
+            }
+
+            if (nbNonInitialized == totalProcessus) {
+                // Send End to All
+                for (int i = 0; i < totalProcessus; i++) {
+                    SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procId, i);
+                    sendTo(routeur[i], message);
+                    log.info("Envoi END_REGISTER a " + i + ", par " + routeur[i]);
+                }
+            }
         }
-        else
-        {
-            SyncMessage message = new SyncMessage(MsgType.END_REGISTER, p, procTarget);
+    }
+
+    // Rule 3 : receive REGISTER
+    synchronized void receiveEND_REGISTER(int procAuteur, int procTarget, int door) {
+        log.info("Recu END_REGISTER de " + procAuteur + " pour " + procTarget);
+        if (procTarget != procId) {
+            SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procAuteur, procTarget);
             sendTo(routeur[procTarget], message);
+            log.info("Envoi END_REGISTER a " + procTarget + ", par " + routeur[procTarget]);
         }
 
         int nbInitialized = 0;
 
-        for (int i = 0; i < totalProcessus; i++)
-        {
-            if (-1 != routeur[i])
-            {
+        for (int i = 0; i < totalProcessus; i++) {
+            if (-1 != routeur[i]) {
                 nbInitialized++;
             }
         }
 
-        if (totalProcessus == nbInitialized)
-        {
+        if (totalProcessus == nbInitialized) {
             initialized = false;
         }
     }
 
-    // Rule 3.0 : receive REQ
-    synchronized void receiveREQ( int pAuth,int pTarget, int H_P, int d)
-    {
-        if (pTarget == procId)
-        {
-            System.out.println("REQ : " + pTarget);
-
+    // Rule 4 : receive REQ
+    synchronized void receiveREQ(int procAuteur, int procTarget, int H_P, int door) {
+        if (procTarget == procId) {
+            log.info("Recu REQ(" + H_P + ") de " + procAuteur);
             if (H < H_P) {
                 H = H_P;
             }
             H++;
-            if (R && ((HSC < H_P) || ((HSC == H_P) && pTarget < pAuth))){
-                relDiffere[pAuth] = true;
-            }else{
-                SyncMessage message = new SyncMessage(MsgType.REL, procId, pAuth);
-                sendTo(routeur[pAuth], message);
+            if (R && ((HSC < H_P) || ((HSC == H_P) && procTarget < procAuteur))) {
+                tabRelDiffere[procAuteur] = true;
+            } else {
+                SyncMessage message = new SyncMessage(MsgType.REL, procId, procAuteur);
+                sendTo(routeur[procAuteur], message);
+                log.info("Envoi REL a " + procAuteur);
             }
-        }
-        else
-        {
-            SyncMessage message = new SyncMessage(MsgType.REQ, pAuth, pTarget, H_P);
-            sendTo(routeur[pTarget], message);
+        } else {
+            log.info("Recu REQ(" + H_P + ") de " + procAuteur + " pour " + procTarget);
+            SyncMessage message = new SyncMessage(MsgType.REQ, procAuteur, procTarget, H_P);
+            sendTo(routeur[procTarget], message);
+            log.info("Envoi REQ(" + H_P + ") a " + procTarget + " par " + routeur[procTarget]);
         }
     }
 
-    // Rule 3 : receive REL
-    synchronized void receiveREL( int procAuth, int procTarget, int d)
+    // Rule 5 : receive REL
+    synchronized void receiveREL(int procAuteur, int procTarget, int door)
     {
-        System.out.println("REL : " + procTarget);
 
         if (procTarget == procId)
         {
+            log.info("Recu REL de " + procTarget);
             nREL--;
             this.notify();
         }
         else
         {
-            SyncMessage message = new SyncMessage(MsgType.REL, procAuth, procTarget);
+            log.info("Recu REL de " + procTarget + " pour " + procTarget);
+            SyncMessage message = new SyncMessage(MsgType.REL, procAuteur, procTarget);
             sendTo(routeur[procTarget], message);
+            log.info("Envoi REL a " + procAuteur + " par " + routeur[procTarget]);
         }
     }
 
-    // Rule 4 : receive FORME
-    synchronized void receiveFORME( Forme forme, int pInitiateur, int pTarget, int d)
+    // Rule 6 : receive FORME
+    synchronized void receiveFORME( Forme forme, int procAuteur, int procTarget, int d)
     {
         SyncMessage tm;
 
-        if (procId == pTarget) {
-            LinkedList<Forme> canvasList = tableau.canvas.getFormes();
-            if (!canvasList.contains(forme)) {
-                System.out.println("-------> Updated Canvas!!! ProcID: " + procId + " Vers: " + pTarget);
-                tableau.canvas.delivreForme(forme);
-            }
-
-
-            if (pInitiateur != procNeighbor) {
-                tm = new SyncMessage(MsgType.FORME, forme, pInitiateur, procNeighbor);
-                sendTo(routeur[procNeighbor], tm);
-            }
+        if (procId == procTarget) {
+            log.info("Recu FORME de " + procAuteur);
+            tableau.canvas.delivreForme(forme);
         }
         else
         {
-            tm = new SyncMessage(MsgType.FORME, forme, pInitiateur, pTarget);
-            sendTo(routeur[pTarget], tm);
+            log.info("Recu FORME de " + procAuteur + " pour " + procTarget);
+            tm = new SyncMessage(MsgType.FORME, forme, procAuteur, procTarget);
+            sendTo(routeur[procTarget], tm);
+            log.info("Envoi FORME de " + procAuteur + " a " + procTarget + " par " + routeur[procTarget]);
         }
     }
 
 
-    // Rule 3 :
+    // Rule 7 :
     void endCriticalUse()
     {
-        System.out.println("endCriticalUse!");
         R = false;
         SyncMessage tm;
 
         if (tableau.canvas.getFormes().size() > 0) {
             for (int i = 0; i < totalProcessus; i++) {
-                tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, procNeighbor);
-                sendTo(routeur[procNeighbor], tm);
-                if (relDiffere[i]){
+                tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, i);
+                sendTo(routeur[i], tm);
+                log.info("Envoi FORME a " + i + " par " + routeur[i]);
+                if (tabRelDiffere[i]){
                     tm = new SyncMessage(MsgType.REL, procId, i);
                     sendTo( routeur[i], tm );
-                    relDiffere[i] = false;
+                    log.info("Envoi REL a " + i + " par " + routeur[i]);
+                    tabRelDiffere[i] = false;
                 }
             }
         }
@@ -333,22 +304,22 @@ public class RicartAgrawalaMutualExclusion extends Algorithm {
     }
 
     // Access to receive function
-    public SyncMessage recoit (Door d )
+    public SyncMessage recoit (Door door )
     {
-        SyncMessage sm = (SyncMessage)receive( d );
+        SyncMessage sm = (SyncMessage)receive( door );
         return sm;
     }
 
     // Display routage
     void displayRoutage()
     {
-        String b = "Proc : " + procId + '\n';
+        String builder = "Proc : " + procId + '\n';
 
         for (int i = 0; i < totalProcessus;i++){
-            b = b + '\t' + "Vers " + i + " : " + routeur[i] + '\n';
+            builder = builder + '\t' + "Vers " + i + " : " + routeur[i] + '\n';
         }
 
-        log.info(b);
+        log.info(builder);
     }
 
     // Display state

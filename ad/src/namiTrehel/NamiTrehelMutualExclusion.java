@@ -4,18 +4,13 @@ package namiTrehel;
 
 import commun.DisplayFrame;
 import commun.MsgType;
-import commun.SingleLineFormatter;
 import commun.SyncMessage;
 import gui.Forme;
 import visidia.simulation.process.algorithm.Algorithm;
 import visidia.simulation.process.messages.Door;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 // Visidia imports
 
@@ -39,13 +34,12 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // State display frame
     DisplayFrame tableau;
 
-    private Object synch = new Object();
+    private Object objectSync = new Object();
 
     int routeur[];
-    boolean initRouteur[];
     boolean initialized = true;
 
-    private static final Logger log = Logger.getLogger( NamiTrehelMutualExclusion.class.getName() );
+    private Logger log;
 
 
     public String getDescription() {
@@ -65,22 +59,24 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     public void init()
     {
 
-        Handler handler = null;
-        try {
-            handler = new FileHandler( "Nami-Trehel_"+procId+".log");
-            log.setLevel(Level.INFO);
-            SingleLineFormatter formatter = new SingleLineFormatter();
-            handler.setFormatter(formatter);
-            Logger.getLogger("").addHandler(handler);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         int speed = 4;
         procId = getId();
         nbNeighbors = getArity();
         totalProcessus = getNetSize();
         procNeighbor = (procId + 1) % totalProcessus;
+
+        log = Logger.getLogger( "" + procId );
+
+        Handler handler = null;
+        try {
+            handler = new FileHandler( "Nami-Trehel_"+procId+".log");
+            log.setLevel(Level.INFO);
+            SimpleFormatter formatter = new SimpleFormatter();
+            handler.setFormatter(formatter);
+            Logger.getLogger("" + procId).addHandler(handler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         rr = new ReceptionRules( this );
         rr.start();
@@ -88,13 +84,10 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         log.info("Process " + procId + " as " + nbNeighbors + " neighbors");
 
         routeur = new int[totalProcessus];
-        initRouteur = new boolean[totalProcessus];
         for(int i = 0;i<totalProcessus;i++){
             routeur[i] = -1;
-            initRouteur[i] = false;
         }
         routeur[procId] = 0;
-        initRouteur[procId] = true;
         log.info("Envoi de message d'identification aux autres processus.");
         for (int i = 0; i < nbNeighbors; i++)
         {
@@ -123,7 +116,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
 
         log.info("Fin table de routage");
 
-        tableau = new DisplayFrame(procId, synch);
+        tableau = new DisplayFrame(procId, objectSync);
 
         displayRoutage();
 
@@ -145,13 +138,13 @@ public class NamiTrehelMutualExclusion extends Algorithm {
             // Access critical
             log.info("Entree en Section Critique");
             tableau.inSectionCritique = true;
-            synchronized (synch) {
+            synchronized (objectSync) {
                 displayState();
                 tableau.demandeSectionCritique = false;
                 tableau.continuerSectionCritique();
 
                 try {
-                    synch.wait();
+                    objectSync.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -221,11 +214,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 2 : receive REGISTER
     synchronized void receiveEND_REGISTER( int p, int procTarget, int d)
     {
-        if (procTarget == procId)
-        {
-            initRouteur[p] = true;
-        }
-        else
+        if (procTarget != procId)
         {
             SyncMessage message = new SyncMessage(MsgType.END_REGISTER, p, procTarget);
             sendTo(routeur[procTarget], message);
@@ -253,8 +242,6 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         if (pTarget == procId)
         {
             System.out.println("REQ! Target: " + pTarget + " Auth: " + pAuth + " Parameter: " + parameterNextProc + " Owner: " + owner);
-
-            //TODO: la conmbinaison des parametres de messages sont incorrect, les messages bouclent entre deux procs.
 
             if (-1 == owner) {
                 if (SC){
@@ -301,16 +288,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         SyncMessage tm;
 
         if (procId == pTarget) {
-            LinkedList<Forme> canvasList = tableau.canvas.getFormes();
-            if (!canvasList.contains(forme)) {
-                tableau.canvas.delivreForme(forme);
-            }
-
-
-            if (pInitiateur != procNeighbor) {
-                tm = new SyncMessage(MsgType.FORME, forme, pInitiateur, procNeighbor);
-                sendTo(routeur[procNeighbor], tm);
-            }
+            tableau.canvas.delivreForme(forme);
         }
         else
         {
@@ -328,8 +306,8 @@ public class NamiTrehelMutualExclusion extends Algorithm {
 
         if (tableau.canvas.getFormes().size() > 0) {
             for (int i = 0; i < totalProcessus; i++) {
-                tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, procNeighbor);
-                sendTo(routeur[procNeighbor], tm);
+                tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, i);
+                sendTo(routeur[i], tm);
                 if (-1 != next){
                     tm = new SyncMessage(MsgType.TOKEN, procId, next);
                     sendTo( routeur[next], tm );
