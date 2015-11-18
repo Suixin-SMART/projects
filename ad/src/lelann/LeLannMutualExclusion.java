@@ -73,7 +73,7 @@ public class LeLannMutualExclusion extends Algorithm {
         rr = new ReceptionRules( this );
         rr.start();
 
-        log.info("Process " + procId + " as " + nbNeighbors + " neighbors");
+        log.info(procId + " : Process " + procId + " as " + nbNeighbors + " neighbors");
 
         routeur = new int[totalProcessus];
         for(int i = 0;i<totalProcessus;i++){
@@ -84,10 +84,10 @@ public class LeLannMutualExclusion extends Algorithm {
         {
             SyncMessage message = new SyncMessage(MsgType.REGISTER, procId);
             sendTo(i, message);
-            log.info("Envoi REGISTER a " + i);
+            log.info(procId + " : Envoi REGISTER a " + i);
         }
 
-        log.info("Debut table de routage");
+        log.info(procId + " : Debut table de routage");
 
         while(initialized)
         {
@@ -98,22 +98,22 @@ public class LeLannMutualExclusion extends Algorithm {
             }
         }
 
-        log.info("Fin table de routage");
+        log.info(procId + " : Fin table de routage");
 
         tableau = new DisplayFrame(procId, objectSync);
 
         displayRoutage();
 
 
-        log.info("Debut de la circulation du token");
+        log.info(procId + " : Debut de la circulation du token");
 
 
         if ( procId == 0 ) {
-            log.info("Processus initiateur");
+            log.info(procId + " : Processus initiateur");
             token = false;
             SyncMessage tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
             boolean sent = sendTo( routeur[procNeighbor], tm );
-            log.info("Envoi du TOKEN a " + procNeighbor);
+            log.info(procId + " : Envoi du TOKEN a " + procNeighbor);
         }
 
         while( true ) {
@@ -122,7 +122,7 @@ public class LeLannMutualExclusion extends Algorithm {
             askForCritical();
 
             // Access critical
-            log.info("Entree en Section Critique");
+            log.info(procId + " : Entree en Section Critique");
             tableau.inSectionCritique = true;
             synchronized (objectSync) {
                 displayState();
@@ -136,7 +136,7 @@ public class LeLannMutualExclusion extends Algorithm {
             }
             tableau.demandeSectionCritique = false;
             // Release critical use
-            log.info("Fin de Section Critique");
+            log.info(procId + " : Fin de Section Critique");
             endCriticalUse();
         }
 
@@ -150,7 +150,7 @@ public class LeLannMutualExclusion extends Algorithm {
     // Rule 1 : ask for critical section
     synchronized void askForCritical()
     {
-        log.info("Demande Section Critique");
+        log.info(procId + " : Demande Section Critique");
         while( !token )
         {
             displayState();
@@ -161,7 +161,7 @@ public class LeLannMutualExclusion extends Algorithm {
     // Rule 1 : receive REGISTER
     synchronized void receiveREGISTER( int procAuteur, int door)
     {
-        log.info("Recu REGISTER de " + procAuteur);
+        log.info(procId + " : Recu REGISTER de " + procAuteur);
         if (-1 == routeur[procAuteur])
         {
             routeur[procAuteur] = door;
@@ -169,7 +169,7 @@ public class LeLannMutualExclusion extends Algorithm {
             {
                 SyncMessage message = new SyncMessage(MsgType.REGISTER, procAuteur);
                 sendTo(i, message);
-                log.info("Envoi REGISTER a " + i);
+                log.info(procId + " : Envoi REGISTER a " + i);
             }
 
             int nbNonInitialized = 0;
@@ -187,7 +187,7 @@ public class LeLannMutualExclusion extends Algorithm {
                 for (int i = 0; i < totalProcessus; i++) {
                     SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procId, i);
                     sendTo(routeur[i], message);
-                    log.info("Envoi END_REGISTER a " + i + ", par " + routeur[i]);
+                    log.info(procId + " : Envoi END_REGISTER a " + i + ", par " + routeur[i]);
                 }
             }
         }
@@ -196,12 +196,12 @@ public class LeLannMutualExclusion extends Algorithm {
     // Rule 2 : receive REGISTER
     synchronized void receiveEND_REGISTER( int procAuteur, int procTarget, int d)
     {
-        log.info("Recu END_REGISTER de " + procAuteur + " pour " + procTarget);
+        log.info(procId + " : Recu END_REGISTER de " + procAuteur + " pour " + procTarget);
         if (procTarget != procId)
         {
             SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procAuteur, procTarget);
             sendTo(routeur[procTarget], message);
-            log.info("Envoi END_REGISTER a " + procTarget + ", par " + routeur[procTarget]);
+            log.info(procId + " : Envoi END_REGISTER a " + procTarget + ", par " + routeur[procTarget]);
         }
 
         int nbInitialized = 0;
@@ -225,7 +225,7 @@ public class LeLannMutualExclusion extends Algorithm {
     {
         if (procTarget == procId)
         {
-            log.info("Recu JETON pour moi! ");
+            log.info(procId + " : Recu JETON pour moi! ");
             if ( tableau.getDemandeSectionCritique() )
             {
                 token = true;
@@ -237,15 +237,15 @@ public class LeLannMutualExclusion extends Algorithm {
                 // Forward token to successor
                 SyncMessage tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
                 boolean sent = sendTo( routeur[procNeighbor], tm );
-                log.info("Envoi JETON a " + procNeighbor);
+                log.info(procId + " : Envoi JETON a " + procNeighbor);
             }
         }
         else
         {
-            log.info("Recu JETON pour " + procTarget);
+            log.info(procId + " : Recu JETON pour " + procTarget);
             SyncMessage tm = new SyncMessage(MsgType.TOKEN, procTarget);
             sendTo( routeur[procTarget], tm );
-            log.info("Envoi JETON a " + procNeighbor);
+            log.info(procId + " : Envoi JETON a " + procNeighbor);
         }
     }
 
@@ -254,20 +254,20 @@ public class LeLannMutualExclusion extends Algorithm {
     {
         SyncMessage tm;
         if (procId == procTarget) {
-            log.info("Recu FORME de " + procAuteur);
+            log.info(procId + " : Recu FORME de " + procAuteur);
             tableau.canvas.delivreForme(forme);
             if (procAuteur != procNeighbor) {
                 tm = new SyncMessage(MsgType.FORME, forme, procAuteur, procNeighbor);
                 sendTo(routeur[procNeighbor], tm);
-                log.info("Envoi FORME de " + procAuteur + " a " + procNeighbor + " par " + routeur[procNeighbor]);
+                log.info(procId + " : Envoi FORME de " + procAuteur + " a " + procNeighbor + " par " + routeur[procNeighbor]);
             }
         }
         else
         {
-            log.info("Recu FORME de " + procAuteur + " pour " + procTarget);
+            log.info(procId + " : Recu FORME de " + procAuteur + " pour " + procTarget);
             tm = new SyncMessage(MsgType.FORME, forme, procAuteur, procTarget);
             sendTo(routeur[procTarget], tm);
-            log.info("Envoi FORME de " + procAuteur + " a " + procTarget + " par " + routeur[procTarget]);
+            log.info(procId + " : Envoi FORME de " + procAuteur + " a " + procTarget + " par " + routeur[procTarget]);
         }
     }
 
@@ -280,16 +280,18 @@ public class LeLannMutualExclusion extends Algorithm {
 
         if (tableau.canvas.getFormes().size() > 0) {
             for (int i = 0; i < totalProcessus; i++) {
-                tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, procNeighbor);
-                sendTo(routeur[procNeighbor], tm);
-                log.info("Envoi FORME a " + i + " par " + routeur[i]);
+                if (procId != i) {
+                    tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, procNeighbor);
+                    sendTo(routeur[procNeighbor], tm);
+                    log.info(procId + " : Envoi FORME a " + i + " par " + routeur[i]);
+                }
             }
         }
 
 
         tm = new SyncMessage(MsgType.TOKEN, procNeighbor);
         sendTo( routeur[procNeighbor], tm );
-        log.info("Envoi TOKEN a " + procNeighbor + " par " + routeur[procNeighbor]);
+        log.info(procId + " : Envoi TOKEN a " + procNeighbor + " par " + routeur[procNeighbor]);
 
     }
 

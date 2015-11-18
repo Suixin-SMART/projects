@@ -81,7 +81,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         rr = new ReceptionRules( this );
         rr.start();
 
-        log.info("Process " + procId + " as " + nbNeighbors + " neighbors");
+        log.info(procId + " : Process " + procId + " has " + nbNeighbors + " neighbors");
 
         routeur = new int[totalProcessus];
         for(int i = 0;i<totalProcessus;i++){
@@ -92,7 +92,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         {
             SyncMessage message = new SyncMessage(MsgType.REGISTER, procId);
             sendTo(i, message);
-            log.info("Envoi REGISTER a " + i);
+            log.info(procId + " : Envoi REGISTER a " + i);
         }
 
         //initialisation Algorithmique
@@ -103,7 +103,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
             owner = 0;
         }
 
-        log.info("Debut table de routage");
+        log.info(procId + " : Debut table de routage");
 
         while(initialized)
         {
@@ -114,7 +114,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
             }
         }
 
-        log.info("Fin table de routage");
+        log.info(procId + " : Fin table de routage");
 
         tableau = new DisplayFrame(procId, objectSync);
 
@@ -133,7 +133,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
 
             askForCritical();
             // Access critical
-            log.info("Entree en Section Critique");
+            log.info(procId + " : Entree en Section Critique");
             tableau.inSectionCritique = true;
             synchronized (objectSync) {
                 displayState();
@@ -148,7 +148,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
             }
 
             // Release critical use
-            log.info("Fin de Section Critique");
+            log.info(procId + " : Fin de Section Critique");
             endCriticalUse();
         }
 
@@ -162,12 +162,11 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 1 : ask for critical section
     synchronized void askForCritical()
     {
-        log.info("Demande Section Critique Token: " + owner);
-        SC = true;
+        log.info(procId + " : Demande Section Critique Token: " + owner);
         if (-1 != owner){
             SyncMessage message = new SyncMessage(MsgType.REQ, procId, owner, next);
             sendTo(routeur[owner], message);
-            log.info("Envoi REQ a " + owner + " par " + routeur[owner]);
+            log.info(procId + " : Envoi REQ a " + owner + " par " + routeur[owner]);
             owner = -1;
             while( !jeton )
             {
@@ -179,7 +178,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 1 : receive REGISTER
     synchronized void receiveREGISTER( int procAuteur, int door)
     {
-        log.info("Recu REGISTER de " + procAuteur);
+        log.info(procId + " : Recu REGISTER de " + procAuteur);
         if (-1 == routeur[procAuteur])
         {
             routeur[procAuteur] = door;
@@ -187,7 +186,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
             {
                 SyncMessage message = new SyncMessage(MsgType.REGISTER, procAuteur);
                 sendTo(i, message);
-                log.info("Envoi REGISTER a " + i);
+                log.info(procId + " : Envoi REGISTER a " + i);
             }
 
             int nbNonInitialized = 0;
@@ -205,7 +204,7 @@ public class NamiTrehelMutualExclusion extends Algorithm {
                 for (int i = 0; i < totalProcessus; i++) {
                     SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procId, i);
                     sendTo(routeur[i], message);
-                    log.info("Envoi END_REGISTER a " + i + ", par " + routeur[i]);
+                    log.info(procId + " : Envoi END_REGISTER a " + i + ", par " + routeur[i]);
                 }
             }
         }
@@ -214,12 +213,12 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 2 : receive REGISTER
     synchronized void receiveEND_REGISTER( int procAuteur, int procTarget, int door)
     {
-        log.info("Recu END_REGISTER de " + procAuteur + " pour " + procTarget);
+        log.info(procId + " : Recu END_REGISTER de " + procAuteur + " pour " + procTarget);
         if (procTarget != procId)
         {
             SyncMessage message = new SyncMessage(MsgType.END_REGISTER, procAuteur, procTarget);
             sendTo(routeur[procTarget], message);
-            log.info("Envoi END_REGISTER a " + procTarget + ", par " + routeur[procTarget]);
+            log.info(procId + " : Envoi END_REGISTER a " + procTarget + ", par " + routeur[procTarget]);
         }
 
         int nbInitialized = 0;
@@ -243,30 +242,30 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     {
         if (procTarget == procId)
         {
-            log.info("Recu REQ de " + procAuteur + " Parameter: " + parameterNextProc + " Owner: " + owner);
+            log.info(procId + " : Recu REQ de " + procAuteur + " Parameter: " + parameterNextProc + " Owner: " + owner);
 
             if (-1 == owner) {
-                if (SC){
-                    next = parameterNextProc;
+                if (tableau.demandeSectionCritique){
+                    next = procAuteur;
                 }else{
                     jeton = false;
                     SyncMessage message = new SyncMessage(MsgType.TOKEN, procId, procAuteur);
                     sendTo(routeur[procAuteur], message);
-                    log.info("Envoi TOKEN a " + procAuteur);
+                    log.info(procId + " : Envoi TOKEN a " + procAuteur);
                 }
             }else{
                 SyncMessage message = new SyncMessage(MsgType.REQ, procAuteur, owner, parameterNextProc);
                 sendTo(routeur[owner], message);
-                log.info("Envoi REQ a " + owner);
+                log.info(procId + " : Envoi REQ a " + owner);
             }
-            owner = parameterNextProc;
+            owner = procAuteur;
         }
         else
         {
-            log.info("Recu REQ de " + procAuteur + " vers: " + procTarget + " Parameter: " + parameterNextProc + " Owner: " + owner);
+            log.info(procId + " : Recu REQ de " + procAuteur + " vers: " + procTarget + " Parameter: " + parameterNextProc + " Owner: " + owner);
             SyncMessage message = new SyncMessage(MsgType.REQ, procAuteur, procTarget, parameterNextProc);
             sendTo(routeur[procTarget], message);
-            log.info("Envoi REQ a " + procTarget);
+            log.info(procId + " : Envoi REQ a " + procTarget);
         }
     }
 
@@ -275,16 +274,16 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     {
         if (procTarget == procId)
         {
-            log.info("Recu JETON de " + procAuteur);
+            log.info(procId + " : Recu JETON de " + procAuteur);
             jeton = true;
             this.notify();
         }
         else
         {
-            log.info("Recu JETON de " + procAuteur + " vers " + procTarget);
+            log.info(procId + " : Recu JETON de " + procAuteur + " vers " + procTarget);
             SyncMessage message = new SyncMessage(MsgType.TOKEN, procAuteur, procTarget);
             sendTo(routeur[procTarget], message);
-            log.info("Envoi JETON de " + procAuteur + " vers " + procTarget);
+            log.info(procId + " : Envoi JETON de " + procAuteur + " vers " + procTarget);
         }
     }
 
@@ -294,15 +293,15 @@ public class NamiTrehelMutualExclusion extends Algorithm {
         SyncMessage tm;
 
         if (procId == procTarget) {
-            log.info("Recu FORME de " + procAuteur);
+            log.info(procId + " : Recu FORME de " + procAuteur);
             tableau.canvas.delivreForme(forme);
         }
         else
         {
-            log.info("Recu FORME de " + procAuteur + " pour " + procTarget);
+            log.info(procId + " : Recu FORME de " + procAuteur + " pour " + procTarget);
             tm = new SyncMessage(MsgType.FORME, forme, procAuteur, procTarget);
             sendTo(routeur[procTarget], tm);
-            log.info("Envoi FORME de " + procAuteur + " a " + procTarget + " par " + routeur[procTarget]);
+            log.info(procId + " : Envoi FORME de " + procAuteur + " a " + procTarget + " par " + routeur[procTarget]);
         }
     }
 
@@ -310,20 +309,21 @@ public class NamiTrehelMutualExclusion extends Algorithm {
     // Rule 3 :
     void endCriticalUse()
     {
-        SC = false;
         SyncMessage tm;
 
         if (tableau.canvas.getFormes().size() > 0) {
             for (int i = 0; i < totalProcessus; i++) {
-                tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, i);
-                sendTo(routeur[i], tm);
-                log.info("Envoi FORME a " + i + " par " + routeur[i]);
-                if (-1 != next){
-                    tm = new SyncMessage(MsgType.TOKEN, procId, next);
-                    sendTo( routeur[next], tm );
-                    log.info("Envoi TOKEN a " + next + " par " + routeur[next]);
-                    next = -1;
-                    jeton = false;
+                if (procId != i) {
+                    tm = new SyncMessage(MsgType.FORME, tableau.canvas.getFormes().getLast(), procId, i);
+                    sendTo(routeur[i], tm);
+                    log.info(procId + " : Envoi FORME a " + i + " par " + routeur[i]);
+                    if (-1 != next) {
+                        tm = new SyncMessage(MsgType.TOKEN, procId, next);
+                        sendTo(routeur[next], tm);
+                        log.info(procId + " : Envoi TOKEN a " + next + " par " + routeur[next]);
+                        next = -1;
+                        jeton = false;
+                    }
                 }
             }
         }
