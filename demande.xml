@@ -1,36 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!DOCTYPE optimisation [
- <!ELEMENT optimisation (epreuves,salles,epreuvesCommunes)>
- <!ELEMENT epreuves (epreuve)*>
- <!ELEMENT epreuve EMPTY>
- <!ATTLIST epreuve
-   name             ID          #REQUIRED
-   nbEtudiants      CDATA       #REQUIRED
-   jour             CDATA	    #IMPLIED
-   heureDebut       CDATA       #IMPLIED
-   duree            CDATA       #REQUIRED
-   heureFin         CDATA       #IMPLIED
->
-<!ELEMENT salles (salle)*>
-<!ELEMENT salle (creneau-occupe)*>
-<!ATTLIST salle
-  name             ID          #REQUIRED
-  capacite         CDATA       #REQUIRED
->
-<!ELEMENT epreuvesCommunes (epreuvesCommune)*>
-<!ELEMENT epreuvesCommune EMPTY>
-<!ATTLIST epreuvesCommune
-  idEpreuve1      IDREF       #REQUIRED
-  idEpreuve2      IDREF       #REQUIRED
->
-<!ELEMENT creneau-occupe EMPTY>
-<!ATTLIST creneau-occupe
-  jour            CDATA  	  #REQUIRED
-  debut           CDATA       #REQUIRED
-  fin             CDATA       #REQUIRED
->
-]>
+        <!ELEMENT optimisation (regroupements,epreuves,salles,epreuvesAyantDesEtudiantsEnCommun)>
+        <!ELEMENT regroupements (regroupement)*>
+        <!ELEMENT regroupement (matiere)*>
+        <!ATTLIST regroupement
+                name              ID       #REQUIRED
+                >
+        <!ELEMENT matiere EMPTY>
+        <!ATTLIST matiere
+                name              IDREF       #REQUIRED
+                nbEtudiants       CDATA       #REQUIRED
+                >
+        <!ELEMENT epreuves (epreuve)*>
+        <!ELEMENT epreuve EMPTY>
+        <!ATTLIST epreuve
+                name             ID          #REQUIRED
+                nbEtudiants      CDATA       #REQUIRED
+                jour             CDATA	    #IMPLIED
+                heureDebut       CDATA       #IMPLIED
+                duree            CDATA       #REQUIRED
+                heureFin         CDATA       #IMPLIED
+                salle            IDREF       #IMPLIED
+                >
+        <!ELEMENT salles (salle)*>
+        <!ELEMENT salle (creneau-occupe)*>
+        <!ATTLIST salle
+                name             ID          #REQUIRED
+                capacite         CDATA       #REQUIRED
+                >
+        <!ELEMENT epreuvesAyantDesEtudiantsEnCommun (epreuvesCommune)*>
+        <!ELEMENT epreuvesCommune EMPTY>
+        <!ATTLIST epreuvesCommune
+                idEpreuve1      IDREF       #REQUIRED
+                idEpreuve2      IDREF       #REQUIRED
+                >
+        <!ELEMENT creneau-occupe EMPTY>
+        <!ATTLIST creneau-occupe
+                jour            CDATA  	  #REQUIRED
+                debut           CDATA       #REQUIRED
+                fin             CDATA       #REQUIRED
+                >
+        ]>
 <optimisation>
+  <regroupements>
+    <regroupement name="M1">
+      <matiere name="Graph" nbEtudiants="54" />
+      <matiere name="GL" nbEtudiants="54" />
+      <matiere name="MICA" nbEtudiants="54" />
+      <matiere name="COMP" nbEtudiants="54" />
+      <matiere name="RESO" nbEtudiants="54" />
+    </regroupement>
+    <regroupement name="L1">
+      <matiere name="Analyse" nbEtudiants="30" />
+      <matiere name="Physique" nbEtudiants="30" />
+      <matiere name="Anglais" nbEtudiants="30" />
+      <matiere name="Electronique" nbEtudiants="30" />
+    </regroupement>
+  </regroupements>
   <epreuves>
     <epreuve name="Graph" nbEtudiants="54" duree="4" />
     <epreuve name="GL" nbEtudiants="54" duree="3" />
@@ -44,11 +70,11 @@
     <epreuve name="Electronique" nbEtudiants="30" duree="3" />
   </epreuves>
   <salles>
-    <salle name="Amphi A" capacite="94">
+    <salle name="Amphi_A" capacite="94">
       <creneau-occupe jour="1" debut="8" fin="10" />
     </salle>
   </salles>
-  <epreuvesCommunes>
+  <epreuvesAyantDesEtudiantsEnCommun>
     <epreuvesCommune idEpreuve1="Graph" idEpreuve2="GL" />
     <epreuvesCommune idEpreuve1="Graph" idEpreuve2="MICA" />
     <epreuvesCommune idEpreuve1="Graph" idEpreuve2="COMP" />
@@ -60,12 +86,11 @@
     <epreuvesCommune idEpreuve1="GL" idEpreuve2="RESO" />
     <epreuvesCommune idEpreuve1="RESO" idEpreuve2="COMP" />
 
-
     <epreuvesCommune idEpreuve1="Analyse" idEpreuve2="Physique" />
     <epreuvesCommune idEpreuve1="Analyse" idEpreuve2="Anglais" />
     <epreuvesCommune idEpreuve1="Analyse" idEpreuve2="Electronique" />
     <epreuvesCommune idEpreuve1="Physique" idEpreuve2="Anglais" />
     <epreuvesCommune idEpreuve1="Physique" idEpreuve2="Electronique" />
     <epreuvesCommune idEpreuve1="Electronique" idEpreuve2="Anglais" />
-  </epreuvesCommunes>
+  </epreuvesAyantDesEtudiantsEnCommun>
 </optimisation>
