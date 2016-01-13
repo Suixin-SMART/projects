@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE optimisation [
+ <!ELEMENT optimisation (epreuves,salles,epreuvesCommunes)>
+ <!ELEMENT epreuves (epreuve)*>
+ <!ELEMENT epreuve EMPTY>
+ <!ATTLIST epreuve
+   name             ID          #REQUIRED
+   nbEtudiants      CDATA       #REQUIRED
+   jour             CDATA	    #IMPLIED
+   heureDebut       CDATA       #IMPLIED
+   duree            CDATA       #REQUIRED
+   heureFin         CDATA       #IMPLIED
+>
+<!ELEMENT salles (salle)*>
+<!ELEMENT salle (creneau-occupe)*>
+<!ATTLIST salle
+  name             ID          #REQUIRED
+  capacite         CDATA       #REQUIRED
+>
+<!ELEMENT epreuvesCommunes (epreuvesCommune)*>
+<!ELEMENT epreuvesCommune EMPTY>
+<!ATTLIST epreuvesCommune
+  idEpreuve1      IDREF       #REQUIRED
+  idEpreuve2      IDREF       #REQUIRED
+>
+<!ELEMENT creneau-occupe EMPTY>
+<!ATTLIST creneau-occupe
+  jour            CDATA  	  #REQUIRED
+  debut           CDATA       #REQUIRED
+  fin             CDATA       #REQUIRED
+>
+]>
+<optimisation>
+  <epreuves>
+    <epreuve name="Graph" nbEtudiants="54" duree="4" />
+    <epreuve name="GL" nbEtudiants="54" duree="3" />
+    <epreuve name="MICA" nbEtudiants="54" duree="8" />
+    <epreuve name="COMP" nbEtudiants="54" duree="6" />
+    <epreuve name="RESO" nbEtudiants="54" duree="3" />
+
+    <epreuve name="Analyse" nbEtudiants="30" duree="5" />
+    <epreuve name="Physique" nbEtudiants="30" duree="6" />
+    <epreuve name="Anglais" nbEtudiants="30" duree="8" />
+    <epreuve name="Electronique" nbEtudiants="30" duree="3" />
+  </epreuves>
+  <salles>
+    <salle name="Amphi A" capacite="94">
+      <creneau-occupe jour="1" debut="8" fin="10" />
+    </salle>
+  </salles>
+  <epreuvesCommunes>
+    <epreuvesCommune idEpreuve1="Graph" idEpreuve2="GL" />
+    <epreuvesCommune idEpreuve1="Graph" idEpreuve2="MICA" />
+    <epreuvesCommune idEpreuve1="Graph" idEpreuve2="COMP" />
+    <epreuvesCommune idEpreuve1="Graph" idEpreuve2="RESO" />
+    <epreuvesCommune idEpreuve1="MICA" idEpreuve2="GL" />
+    <epreuvesCommune idEpreuve1="MICA" idEpreuve2="COMP" />
+    <epreuvesCommune idEpreuve1="MICA" idEpreuve2="RESO" />
+    <epreuvesCommune idEpreuve1="GL" idEpreuve2="COMP" />
+    <epreuvesCommune idEpreuve1="GL" idEpreuve2="RESO" />
+    <epreuvesCommune idEpreuve1="RESO" idEpreuve2="COMP" />
+
+
+    <epreuvesCommune idEpreuve1="Analyse" idEpreuve2="Physique" />
+    <epreuvesCommune idEpreuve1="Analyse" idEpreuve2="Anglais" />
+    <epreuvesCommune idEpreuve1="Analyse" idEpreuve2="Electronique" />
+    <epreuvesCommune idEpreuve1="Physique" idEpreuve2="Anglais" />
+    <epreuvesCommune idEpreuve1="Physique" idEpreuve2="Electronique" />
+    <epreuvesCommune idEpreuve1="Electronique" idEpreuve2="Anglais" />
+  </epreuvesCommunes>
+</optimisation>
