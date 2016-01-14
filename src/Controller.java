@@ -23,9 +23,7 @@ import java.util.HashMap;
 public class Controller {
 
     @FXML
-    private TextField importField;
-    @FXML
-    private TextField exportField;
+    private TextField importField,exportField,prioriteSalle,prioriteDuree,prioriteDist,timeout,deltaTime;
     @FXML
     private Button commencerButton;
 
@@ -34,7 +32,7 @@ public class Controller {
         PrintWriter out = new PrintWriter(exportField.getText());
         out.print(dep.toString());
         out.close();
-        dep.callSicstus(exportField.getText());
+        dep.callSicstus(exportField.getText(),Integer.parseInt(prioriteSalle.getText()),Integer.parseInt(prioriteDuree.getText()),Integer.parseInt(prioriteDist.getText()),Integer.parseInt(timeout.getText()),Integer.parseInt(deltaTime.getText()));
         //DepartGUI.openWebpage(getClass().getResource(exportField.getText())); //Paths.get(exportField.getText()).toUri()
     }
 }
