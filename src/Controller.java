@@ -32,7 +32,7 @@ public class Controller {
         PrintWriter out = new PrintWriter(exportField.getText());
         out.print(dep.toString());
         out.close();
-        dep.callSicstus(exportField.getText(), Integer.getInteger(prioriteSalle.getText()),Integer.getInteger(prioriteDuree.getText()),Integer.getInteger(prioriteDist.getText()),10000,2);
+        dep.callSicstus(exportField.getText(),Integer.parseInt(prioriteSalle.getText()),Integer.parseInt(prioriteDuree.getText()),Integer.parseInt(prioriteDist.getText()),Integer.parseInt(timeout.getText()),Integer.parseInt(deltaTime.getText()));
         //DepartGUI.openWebpage(getClass().getResource(exportField.getText())); //Paths.get(exportField.getText()).toUri()
     }
 }
