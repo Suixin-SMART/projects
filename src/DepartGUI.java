@@ -191,7 +191,6 @@ public class DepartGUI extends Application {
                 "Tasks = [\n" + listTasks + "],\n"+
                 "append(Tasks, ListeTasksSallesPrises, NewTasks),\n";
 
-                //TODO: Incopatibles double for avec un if
         for (EpreuvesCommune e : epreuvesCommunes ) {
             text += "incompatible(S" + e.getEpreuve(1).getId() + ",E" + e.getEpreuve(1).getId() + ",S"+ e.getEpreuve(2).getId() + ",E" + e.getEpreuve(2).getId() + ", DeltaTime),\n";
         }
@@ -200,8 +199,6 @@ public class DepartGUI extends Application {
            text += "        generationClausesExamensCompatiblesEnDuree(Tasks),\n" +
                     "\n" +
                     "        cumulatives(NewTasks, Salles, [bound(upper), task_intervals(true)]),\n";
-
-        //TODO:  Calcul de la duree totale de tous les epreuves compatibles
 
         String dureeTotaleTableau;
         String regroupementsOptimisees = "";
@@ -220,35 +217,6 @@ public class DepartGUI extends Application {
             text += "maximum(MaxDuration" + r.getName() + ", " + r.getName() + "Durations),\n";
             regroupementsOptimisees += "MaxDuration" + r.getName() + "+";
         }
-
-        /*
-        text +=  "       % Calcul de la durée totale des épreuves de M1"+
-                "DM11 #= E1 - S1, DM12 #= E1 - S2, DM13 #= E1 - S3, DM14 #= E1 - S4, DM15 #= E1 - S5,"+
-                "DM21 #= E2 - S1, DM22 #= E2 - S2, DM23 #= E2 - S3, DM24 #= E2 - S4, DM25 #= E2 - S5,"+
-                "DM31 #= E3 - S1, DM32 #= E3 - S2, DM33 #= E3 - S3, DM34 #= E3 - S4, DM35 #= E3 - S5,"+
-                "DM41 #= E4 - S1, DM42 #= E4 - S2, DM43 #= E4 - S3, DM44 #= E4 - S4, DM45 #= E4 - S5,"+
-                "DM51 #= E5 - S1, DM52 #= E5 - S2, DM53 #= E5 - S3, DM54 #= E5 - S4, DM55 #= E5 - S5,"+
-                "M1Durations = [DM11, DM12, DM13, DM14, DM15,"+
-                "DM21, DM22, DM23, DM24, DM25,"+
-                "DM31, DM32, DM33, DM34, DM35,"+
-                "DM41, DM42, DM43, DM44, DM45,"+
-                "DM51, DM52, DM53, DM54, DM55],"+
-        "maximum(MaxDurationM1, M1Durations),"+
-
-        "% Calcul de la durée totale des épreuves de L1"+
-        "DL66 #= E6 - S6, DL67 #= E6 - S7, DL68 #= E6 - S8, DL69 #= E6 - S9,"+
-                "DL76 #= E7 - S6, DL77 #= E7 - S7, DL78 #= E7 - S8, DL79 #= E7 - S9,"+
-                "DL86 #= E8 - S6, DL87 #= E8 - S7, DL88 #= E8 - S8, DL89 #= E8 - S9,"+
-                "DL96 #= E9 - S6, DL97 #= E9 - S7, DL98 #= E9 - S8, DL99 #= E9 - S9,"+
-                "L1Durations = [DL66, DL67, DL68, DL69,"+
-                "DL76, DL77, DL78, DL79,"+
-                "DL86, DL87, DL88, DL89,"+
-                "DL96, DL97, DL98, DL99],"+
-        "maximum(MaxDurationL1, L1Durations),";
-
-        */
-
-
 
         text += "% Calcul du nombre de salles affectées\n" +
                 "        compteNombreSallesAffectees(Tasks, 0, Result),\n" +
@@ -274,7 +242,7 @@ public class DepartGUI extends Application {
         return text;
     }
 
-    public void callSicstus(String filename){
+    public void callSicstus(String filename, int prioriteSalle, int prioriteDuree, int prioriteDist, int tOut, int dTime){
         SICStus sp = null;
         HashMap results;
 
@@ -330,10 +298,11 @@ public class DepartGUI extends Application {
 
                     System.out.println(tmpSalles);
 
-            int facteurDuree = 0;
-            int facteurNbSalle = 1;
-            int timeOut = 10000;
-            int deltaTime = 2;
+            int facteurDuree = prioriteDuree; //0
+            int facteurNbSalle = prioriteSalle; //1
+            int facteurDistance = prioriteDist; //0
+            int timeOut = tOut; //10000
+            int deltaTime = dTime; //2
             String requete = "runSchedule(" + facteurDuree + ", " + facteurNbSalle + ", " + timeOut + ", " + deltaTime +
                     ", "+tmpSalles+", "+tmpEpreuves+", End).";
 
@@ -374,7 +343,7 @@ public class DepartGUI extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Emploi de temps");
-        primaryStage.setScene(new Scene(root, 400, 375));
+        primaryStage.setScene(new Scene(root, 600, 375));
         primaryStage.show();
     }
 

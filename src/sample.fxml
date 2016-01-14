@@ -8,8 +8,20 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="10" prefHeight="95.0" prefWidth="279.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<GridPane alignment="center" hgap="10" prefHeight="270.0" prefWidth="666.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <TextField fx:id="importField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour importer" text="demande.xml" />
+      <TextField fx:id="exportField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour exporter" text="output.pro" GridPane.columnIndex="1" />
+      <Button fx:id="commencerButton" mnemonicParsing="false" onAction="#action" text="Action!" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <TextField fx:id="prioriteSalle" promptText="Priorite salle (0.. intMax) - def = 0" GridPane.rowIndex="2" text="0" />
+      <TextField fx:id="prioriteDuree" promptText="Priorite duree (0.. intMax)  - def = 1" GridPane.rowIndex="3" text="1" />
+      <TextField fx:id="prioriteDist" promptText="Priorite distance (0.. intMax)  - def = 0" GridPane.rowIndex="4" text="0" />
+      <TextField fx:id="timeout" promptText="Timeout (0.. intMax)  - def = 10000" GridPane.rowIndex="5" text="10000" />
+      <TextField fx:id="deltaTime" promptText="Delta time (0.. intMax) - def = 2" GridPane.rowIndex="6" text="2" />
+      <Label text="Priorites" GridPane.rowIndex="1" />
+   </children>
    <columnConstraints>
+      <ColumnConstraints />
       <ColumnConstraints />
    </columnConstraints>
    <rowConstraints>
@@ -19,9 +31,4 @@
       <RowConstraints />
       <RowConstraints />
    </rowConstraints>
-   <children>
-      <TextField fx:id="importField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour importer" />
-      <TextField fx:id="exportField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour exporter" GridPane.rowIndex="1" />
-      <Button fx:id="commencerButton" mnemonicParsing="false" onAction="#action" text="Action!" GridPane.rowIndex="2" />
-   </children>
 </GridPane>
