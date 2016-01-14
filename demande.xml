@@ -41,7 +41,6 @@
                 fin             CDATA       #REQUIRED
                 >
         ]>
-<!--blablabla-->
 <optimisation>
   <regroupements>
     <regroupement name="M1">
