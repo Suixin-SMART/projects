@@ -13,11 +13,12 @@ public class XMLParseur extends DefaultHandler{
     private ArrayList<Epreuve> epreuves;
     private ArrayList<Salle> salles;
     private ArrayList<EpreuvesCommune> epreuvesCommunes;
+    private ArrayList<Regroupement> regroupements;
     private Epreuve epreuve;
     private Salle salle;
     private EpreuvesCommune epreuveCommune;
     private StringBuffer buffer;
-    private int type;
+    private Regroupement regroupement;
     private int nbEpreuves = 1;
 
     public ArrayList<Epreuve> getEpreuves(){
@@ -33,18 +34,24 @@ public class XMLParseur extends DefaultHandler{
         return epreuvesCommunes;
     }
 
+    public ArrayList<Regroupement> getRegroupements(){
+        for(Regroupement e : regroupements){
+            e.matchEpreuves(epreuves);
+        }
+        return regroupements;
+    }
+
     @Override
     public void startDocument() throws SAXException {
         epreuves = new ArrayList<Epreuve>();
         salles = new ArrayList<Salle>();
         epreuvesCommunes = new ArrayList<EpreuvesCommune>();
+        regroupements = new ArrayList<Regroupement>();
     }
 
     @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)throws SAXException {
         if(localName == "epreuve"){
-            type = 1;
-
             int jour, heureFin, heureDebut;
             try{jour = Integer.parseInt(atts.getValue("jour"));}catch(NumberFormatException e){jour = -1;}
             try{heureDebut = Integer.parseInt(atts.getValue("heureDebut"));}catch(NumberFormatException e){heureDebut = -1;}
@@ -54,14 +61,15 @@ public class XMLParseur extends DefaultHandler{
                                     jour,heureDebut,
                                   Integer.parseInt(atts.getValue("duree")),heureFin);
         }else if(localName == "salle"){
-            type = 2;
             salle = new Salle(atts.getValue("name"),Integer.parseInt(atts.getValue("capacite")));
         }else if(localName == "epreuvesCommune"){
-            type = 3;
             epreuveCommune = new EpreuvesCommune(atts.getValue("idEpreuve1"),atts.getValue("idEpreuve2"));
         }else if(localName == "creneau-occupe"){
-            type = 3;
             salle.addCreneau(Integer.parseInt(atts.getValue("jour")),Integer.parseInt(atts.getValue("debut")),Integer.parseInt(atts.getValue("fin")));
+        }else if(localName == "regroupement"){
+            regroupement = new Regroupement(atts.getValue("name"));
+        }else if(localName == "matiere"){
+            regroupement.addMatiere(atts.getValue("name"),Integer.parseInt(atts.getValue("nbEtudiants")));
         }else{
             this.buffer = new StringBuffer();
         }
@@ -83,6 +91,8 @@ public class XMLParseur extends DefaultHandler{
             salles.add(salle);
         }else if(localName == "epreuvesCommune"){
             epreuvesCommunes.add(epreuveCommune);
+        }else if(localName == "regroupement"){
+            regroupements.add(regroupement);
         }
     }
 

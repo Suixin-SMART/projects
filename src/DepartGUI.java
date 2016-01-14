@@ -28,6 +28,7 @@ public class DepartGUI extends Application {
     private ArrayList<Epreuve> epreuves;
     private ArrayList<Salle> salles;
     private ArrayList<EpreuvesCommune> epreuvesCommunes;
+    private ArrayList<Regroupement> regroupements;
 
 
 
@@ -48,6 +49,8 @@ public class DepartGUI extends Application {
         epreuves = parseur.getEpreuves();
         salles = parseur.getSalles();
         epreuvesCommunes = parseur.getEpreuvesCommunes();
+        regroupements = parseur.getRegroupements();
+
         /* END XML Parser */
     }
 
@@ -196,12 +199,31 @@ public class DepartGUI extends Application {
 
            text += "        generationClausesExamensCompatiblesEnDuree(Tasks),\n" +
                     "\n" +
-                    "        cumulatives(NewTasks, Salles, [bound(upper), task_intervals(true)]),";
+                    "        cumulatives(NewTasks, Salles, [bound(upper), task_intervals(true)]),\n";
 
         //TODO:  Calcul de la duree totale de tous les epreuves compatibles
 
+        String dureeTotaleTableau;
+        String regroupementsOptimisees = "";
+        for (Regroupement r: regroupements){
+            text += "% Calcul de la durée totale des épreuves de " + r.getName() + "\n";
+            dureeTotaleTableau = "";
+            for (Epreuve x : r.getEpreuves()){
+                for (Epreuve y : r.getEpreuves()){
+                    text += "D_" + r.getName() + "_" + x.getId() + "_" + y.getId() + " #= E" + x.getId() + " - S" + y.getId() + ",";
+                    dureeTotaleTableau += "D_" + r.getName() + "_" + x.getId() + "_" + y.getId() + ",";
+                }
+                text += "\n";
+            }
+
+            text += r.getName()+"Durations = [" + dureeTotaleTableau.substring(0, dureeTotaleTableau.length() - 1) + "],\n";
+            text += "maximum(MaxDuration" + r.getName() + ", " + r.getName() + "Durations),\n";
+            regroupementsOptimisees += "MaxDuration" + r.getName() + "+";
+        }
+
+        /*
         text +=  "       % Calcul de la durée totale des épreuves de M1"+
-        "DM11 #= E1 - S1, DM12 #= E1 - S2, DM13 #= E1 - S3, DM14 #= E1 - S4, DM15 #= E1 - S5,"+
+                "DM11 #= E1 - S1, DM12 #= E1 - S2, DM13 #= E1 - S3, DM14 #= E1 - S4, DM15 #= E1 - S5,"+
                 "DM21 #= E2 - S1, DM22 #= E2 - S2, DM23 #= E2 - S3, DM24 #= E2 - S4, DM25 #= E2 - S5,"+
                 "DM31 #= E3 - S1, DM32 #= E3 - S2, DM33 #= E3 - S3, DM34 #= E3 - S4, DM35 #= E3 - S5,"+
                 "DM41 #= E4 - S1, DM42 #= E4 - S2, DM43 #= E4 - S3, DM44 #= E4 - S4, DM45 #= E4 - S5,"+
@@ -224,12 +246,14 @@ public class DepartGUI extends Application {
                 "DL96, DL97, DL98, DL99],"+
         "maximum(MaxDurationL1, L1Durations),";
 
+        */
+
 
 
         text += "% Calcul du nombre de salles affectées\n" +
                 "        compteNombreSallesAffectees(Tasks, 0, Result),\n" +
                 "\n" +
-                "        ToMinimize #= PriorityDuration * (MaxDurationM1 + MaxDurationL1) + PrioritySalles * Result,"+// * " + /* TODO : METTRE LES DUREES DES DIFFERENTES PROMOTIONS*/
+                "        ToMinimize #= PriorityDuration * (" + regroupementsOptimisees.substring(0, regroupementsOptimisees.length() - 1) + ") + PrioritySalles * Result,"+// * " + /* TODO : METTRE LES DUREES DES DIFFERENTES PROMOTIONS*/
                 "\n      append(Total, " + listSalles + ", Vars),\n" +
                 "        format('Before.~n', []),\n" +
                 "\n" +
