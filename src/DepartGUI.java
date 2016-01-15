@@ -298,9 +298,14 @@ public class DepartGUI extends Application {
 
                     System.out.println(tmpSalles);
 
-            int facteurDuree = prioriteDuree; //0
-            int facteurNbSalle = prioriteSalle; //1
-            int facteurDistance = prioriteDist; //0
+			int denominateurDuree = regroupements.size();
+			int denominateurSalle = 1;
+			int denominateurDistance = 1;
+			
+            int facteurDuree = prioriteDuree * denominateurSalle * denominateurDistance; //0
+            int facteurNbSalle = prioriteSalle * denominateurDuree * denominateurDistance; //1
+            int facteurDistance = prioriteDist * denominateurDuree * denominateurSalle; //0
+
             int timeOut = tOut; //10000
             int deltaTime = dTime; //2
             String requete = "runSchedule(" + facteurDuree + ", " + facteurNbSalle + ", " + timeOut + ", " + deltaTime +
