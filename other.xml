@@ -111,4 +111,8 @@
       <option name="ENABLED" value="true" />
     </filter>
   </component>
+  <component name="JavaFxSettings">
+    <option name="pathToSceneBuilder" value="/opt/JavaFXSceneBuilder2.0/JavaFXSceneBuilder2.0" />
+    <option name="myPathToSceneBuilder" value="/opt/JavaFXSceneBuilder2.0/JavaFXSceneBuilder2.0" />
+  </component>
 </application>
