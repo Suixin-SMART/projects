@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE optimisation [
+        <!ELEMENT optimisation (regroupements,epreuves,salles,epreuvesAyantDesEtudiantsEnCommun)>
+        <!ELEMENT regroupements (regroupement)*>
+        <!ELEMENT regroupement (matiere)*>
+        <!ATTLIST regroupement
+                name              ID       #REQUIRED
+                >
+        <!ELEMENT matiere EMPTY>
+        <!ATTLIST matiere
+                name              IDREF       #REQUIRED
+                nbEtudiants       CDATA       #REQUIRED
+                >
+        <!ELEMENT epreuves (epreuve)*>
+        <!ELEMENT epreuve EMPTY>
+        <!ATTLIST epreuve
+                name             ID          #REQUIRED
+                nbEtudiants      CDATA       #REQUIRED
+                jour             CDATA	    #IMPLIED
+                heureDebut       CDATA       #IMPLIED
+                duree            CDATA       #REQUIRED
+                heureFin         CDATA       #IMPLIED
+                salle            IDREF       #IMPLIED
+                >
+        <!ELEMENT salles (salle)*>
+        <!ELEMENT salle (creneau-occupe)*>
+        <!ATTLIST salle
+                name             ID          #REQUIRED
+                capacite         CDATA       #REQUIRED
+                >
+        <!ELEMENT epreuvesAyantDesEtudiantsEnCommun (epreuvesCommune)*>
+        <!ELEMENT epreuvesCommune EMPTY>
+        <!ATTLIST epreuvesCommune
+                idEpreuve1      IDREF       #REQUIRED
+                idEpreuve2      IDREF       #REQUIRED
+                >
+        <!ELEMENT creneau-occupe EMPTY>
+        <!ATTLIST creneau-occupe
+                jour            CDATA  	  #REQUIRED
+                debut           CDATA       #REQUIRED
+                fin             CDATA       #REQUIRED
+                >
+        ]>
+<optimisation>
+  <regroupements>
+    <regroupement name="A1">
+      <matiere name="JVA1509" nbEtudiants="35" />
+      <matiere name="JVA1526" nbEtudiants="29" />
+      <matiere name="JVA1510" nbEtudiants="39" />
+      <matiere name="JVA1511" nbEtudiants="33" />
+      <matiere name="JVA1521" nbEtudiants="31" />
+      <matiere name="JVA1522" nbEtudiants="31" />
+    </regroupement>
+    <regroupement name="A2">
+      <matiere name="JVA2E600" nbEtudiants="20" />
+      <matiere name="JVA2E602" nbEtudiants="17" />
+      <matiere name="JVA2E640" nbEtudiants="18" />
+      <matiere name="JVA2E642" nbEtudiants="20" />
+      <matiere name="JVA2T600" nbEtudiants="9" />
+      <matiere name="JVA2T602" nbEtudiants="7" />
+      <matiere name="JVA2T603" nbEtudiants="8" />
+      <matiere name="JVA2T640" nbEtudiants="7" />
+      <matiere name="JVA2E604" nbEtudiants="19" />
+      <matiere name="JVA2E641" nbEtudiants="19" />
+      <matiere name="JVA2E653" nbEtudiants="17" />
+      <matiere name="JVA2T613" nbEtudiants="13" />
+      <matiere name="JVA2T616" nbEtudiants="9" />
+      <matiere name="JVA2T641" nbEtudiants="9" />
+      <matiere name="JVA2T653" nbEtudiants="8" />
+    </regroupement>
+    <regroupement name="A3">
+      <matiere name="JVA3E720" nbEtudiants="18" />
+      <matiere name="JVA3E721" nbEtudiants="19" />
+      <matiere name="JVA3E735" nbEtudiants="19" />
+      <matiere name="JVA3T700" nbEtudiants="7" />
+      <matiere name="JVA3T714" nbEtudiants="7" />
+      <matiere name="JVA3T746" nbEtudiants="7" />
+      <matiere name="JVA3E722" nbEtudiants="19" />
+      <matiere name="JVA3E723" nbEtudiants="17" />
+      <matiere name="JVA3E731" nbEtudiants="15" />
+      <matiere name="JVA3E740" nbEtudiants="16" />
+      <matiere name="JVA3T701" nbEtudiants="8" />
+      <matiere name="JVA3T703" nbEtudiants="8" />
+      <matiere name="JVA3T731" nbEtudiants="8" />
+    </regroupement>
+    <regroupement name="G4">
+      <matiere name="JVG412U" nbEtudiants="13" />
+      <matiere name="JVG413U" nbEtudiants="24" />
+      <matiere name="JVG414U" nbEtudiants="13" />
+    </regroupement>
+    <regroupement name="G5">
+      <matiere name="JVG533U" nbEtudiants="6" />
+      <matiere name="JVG534U" nbEtudiants="6" />
+      <matiere name="JVG535U" nbEtudiants="7" />
+    </regroupement>
+    <regroupement name="I3">
+      <matiere name="JVI3BD" nbEtudiants="54" />
+      <matiere name="JVI3MOP" nbEtudiants="55" />
+      <matiere name="JVI3ASI" nbEtudiants="38" />
+      <matiere name="JVI3SR" nbEtudiants="37" />
+    </regroupement>
+    <regroupement name="I4">
+      <matiere name="JVI4LWD" nbEtudiants="42" />
+      <matiere name="JVI4MOIA" nbEtudiants="45" />
+      <matiere name="JVI4ALAO" nbEtudiants="30" />
+      <matiere name="JVI4FDT" nbEtudiants="6" />
+      <matiere name="JVI4PFA" nbEtudiants="25" />
+    </regroupement>
+    <regroupement name="I5">
+      <matiere name="JVI5MRR" nbEtudiants="9" />
+      <matiere name="JVI5MRS" nbEtudiants="1" />
+      <matiere name="JVI5RESO" nbEtudiants="18" />
+      <matiere name="JVI5SVT" nbEtudiants="9" />
+      <matiere name="JVI5CSD" nbEtudiants="22" />
+      <matiere name="JVI5IDMS" nbEtudiants="20" />
+    </regroupement>
+    <regroupement name="J4">
+      <matiere name="JVJ41806" nbEtudiants="42" />
+      <matiere name="JVJ41816" nbEtudiants="42" />
+      <matiere name="JVJ41818" nbEtudiants="43" />
+      <matiere name="JVJ41819" nbEtudiants="44" />
+      <matiere name="JVJ41802" nbEtudiants="43" />
+      <matiere name="JVJ41803" nbEtudiants="42" />
+      <matiere name="JVJ41804" nbEtudiants="43" />
+      <matiere name="JVJ41817" nbEtudiants="42" />
+      <matiere name="JVJ41814" nbEtudiants="43" />
+    </regroupement>
+    <regroupement name="J5">
+      <matiere name="JVJ53912" nbEtudiants="11" />
+      <matiere name="JVJ53913" nbEtudiants="10" />
+      <matiere name="JVJ53914" nbEtudiants="11" />
+    </regroupement>
+    <regroupement name="K1">
+      <matiere name="JVK112" nbEtudiants="25" />
+      <matiere name="JVK113" nbEtudiants="28" />
+      <matiere name="JVK111" nbEtudiants="28" />
+    </regroupement>
+    <regroupement name="K2">
+      <matiere name="JVK232" nbEtudiants="13" />
+      <matiere name="JVK234EC" nbEtudiants="11" />
+      <matiere name="JVK234ST" nbEtudiants="13" />
+      <matiere name="JVK233" nbEtudiants="15" />
+      <matiere name="JVK235HI" nbEtudiants="5" />
+      <matiere name="JVK235SY" nbEtudiants="9" />
+      <matiere name="JVK231" nbEtudiants="18" />
+    </regroupement>
+    <regroupement name="K3">
+      <matiere name="JVK351" nbEtudiants="14" />
+      <matiere name="JVK353" nbEtudiants="14" />
+      <matiere name="JVK352" nbEtudiants="15" />
+      <matiere name="JVK354AC" nbEtudiants="7" />
+      <matiere name="JVK354EP" nbEtudiants="8" />
+      <matiere name="JVK354MM" nbEtudiants="7" />
+    </regroupement>
+    <regroupement name="K4">
+      <matiere name="JVK412" nbEtudiants="11" />
+      <matiere name="JVK413" nbEtudiants="10" />
+      <matiere name="JVK411" nbEtudiants="12" />
+      <matiere name="JVK414" nbEtudiants="10" />
+    </regroupement>
+    <regroupement name="K5">
+      <matiere name="JVK532" nbEtudiants="11" />
+      <matiere name="JVK534" nbEtudiants="11" />
+      <matiere name="JVK533" nbEtudiants="10" />
+      <matiere name="JVK535EC" nbEtudiants="1" />
+      <matiere name="JVK531" nbEtudiants="11" />
+    </regroupement>
+    <regroupement name="M1">
+      <matiere name="JVM1FONC" nbEtudiants="43" />
+      <matiere name="JVM1PHNE" nbEtudiants="36" />
+      <matiere name="JVM1ANAL" nbEtudiants="44" />
+      <matiere name="JVM1PHYS" nbEtudiants="42" />
+      <matiere name="JVM1FGS" nbEtudiants="27" />
+    </regroupement>
+    <regroupement name="M2">
+      <matiere name="JVM2ALBI" nbEtudiants="18" />
+      <matiere name="JVM2SERI" nbEtudiants="17" />
+      <matiere name="JVM2INTE" nbEtudiants="22" />
+      <matiere name="JVM2POLY" nbEtudiants="19" />
+    </regroupement>
+    <regroupement name="M3">
+      <matiere name="JVM3CADI" nbEtudiants="29" />
+      <matiere name="JVM3ALG1" nbEtudiants="29" />
+      <matiere name="JVM3CAPR" nbEtudiants="17" />
+      <matiere name="JVM3INTE" nbEtudiants="10" />
+    </regroupement>
+    <regroupement name="M4">
+      <matiere name="JVM4FOUR" nbEtudiants="8" />
+      <matiere name="JVM4PROB" nbEtudiants="7" />
+      <matiere name="JVM4ANCO" nbEtudiants="8" />
+      <matiere name="JVM4EQDI" nbEtudiants="8" />
+    </regroupement>
+  </regroupements>
+  <epreuves>
+    <epreuve name="JVA1509" nbEtudiants="35" duree="6" />
+    <epreuve name="JVA1526" nbEtudiants="29" duree="6" />
+    <epreuve name="JVA1510" nbEtudiants="39" duree="4" />
+    <epreuve name="JVA1511" nbEtudiants="33" duree="4" />
+    <epreuve name="JVA1521" nbEtudiants="31" duree="4" />
+    <epreuve name="JVA1522" nbEtudiants="31" duree="4" />
+
+    <epreuve name="JVA2E600" nbEtudiants="20" duree="4" />
+    <epreuve name="JVA2E602" nbEtudiants="17" duree="4" />
+    <epreuve name="JVA2E640" nbEtudiants="18" duree="4" />
+    <epreuve name="JVA2E642" nbEtudiants="20" duree="4" />
+    <epreuve name="JVA2E604" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA2E641" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA2E653" nbEtudiants="17" duree="4" />
+    <epreuve name="JVA2T613" nbEtudiants="13" duree="4" />
+    <epreuve name="JVA2T616" nbEtudiants="9" duree="4" />
+    <epreuve name="JVA2T641" nbEtudiants="9" duree="4" />
+    <epreuve name="JVA2T653" nbEtudiants="8" duree="4" />
+    <epreuve name="JVA2T600" nbEtudiants="9" duree="4" />
+    <epreuve name="JVA2T602" nbEtudiants="7" duree="4" />
+    <epreuve name="JVA2T603" nbEtudiants="8" duree="4" />
+    <epreuve name="JVA2T640" nbEtudiants="7" duree="4" />
+
+    <epreuve name="JVA3E720" nbEtudiants="18" duree="6" />
+    <epreuve name="JVA3E721" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA3E735" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA3T700" nbEtudiants="7" duree="6" />
+    <epreuve name="JVA3T714" nbEtudiants="7" duree="4" />
+    <epreuve name="JVA3T746" nbEtudiants="7" duree="4" />
+    <epreuve name="JVA3E722" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA3E723" nbEtudiants="17" duree="4" />
+    <epreuve name="JVA3E731" nbEtudiants="15" duree="4" />
+    <epreuve name="JVA3E740" nbEtudiants="16" duree="4" />
+    <epreuve name="JVA3T701" nbEtudiants="8" duree="4" />
+    <epreuve name="JVA3T703" nbEtudiants="8" duree="4" />
+    <epreuve name="JVA3T731" nbEtudiants="8" duree="4" />
+
+    <epreuve name="JVG412U" nbEtudiants="13" duree="4" />
+    <epreuve name="JVG413U" nbEtudiants="24" duree="4" />
+    <epreuve name="JVG414U" nbEtudiants="13" duree="4" />
+
+    <epreuve name="JVG533U" nbEtudiants="6" duree="4" />
+    <epreuve name="JVG534U" nbEtudiants="6" duree="4" />
+    <epreuve name="JVG535U" nbEtudiants="7" duree="4" />
+
+    <epreuve name="JVI3BD" nbEtudiants="54" duree="6" />
+    <epreuve name="JVI3MOP" nbEtudiants="55" duree="6" />
+    <epreuve name="JVI3ASI" nbEtudiants="38" duree="6" />
+    <epreuve name="JVI3SR" nbEtudiants="37" duree="6" />
+
+    <epreuve name="JVI4LWD" nbEtudiants="42" duree="6" />
+    <epreuve name="JVI4MOIA" nbEtudiants="45" duree="6" />
+    <epreuve name="JVI4ALAO" nbEtudiants="30" duree="6" />
+    <epreuve name="JVI4FDT" nbEtudiants="6" duree="6" />
+    <epreuve name="JVI4PFA" nbEtudiants="25" duree="6" />
+
+    <epreuve name="JVI5MRR" nbEtudiants="9" duree="6" />
+    <epreuve name="JVI5MRS" nbEtudiants="1" duree="6" />
+    <epreuve name="JVI5RESO" nbEtudiants="18" duree="6" />
+    <epreuve name="JVI5SVT" nbEtudiants="9" duree="6" />
+    <epreuve name="JVI5CSD" nbEtudiants="22" duree="6" />
+    <epreuve name="JVI5IDMS" nbEtudiants="20" duree="6" />
+
+    <epreuve name="JVJ41806" nbEtudiants="42" duree="4" />
+    <epreuve name="JVJ41816" nbEtudiants="42" duree="4" />
+    <epreuve name="JVJ41818" nbEtudiants="43" duree="4" />
+    <epreuve name="JVJ41819" nbEtudiants="44" duree="4" />
+    <epreuve name="JVJ41802" nbEtudiants="43" duree="4" />
+    <epreuve name="JVJ41803" nbEtudiants="42" duree="4" />
+    <epreuve name="JVJ41804" nbEtudiants="43" duree="4" />
+    <epreuve name="JVJ41817" nbEtudiants="42" duree="4" />
+    <epreuve name="JVJ41814" nbEtudiants="43" duree="4" />
+
+    <epreuve name="JVJ53912" nbEtudiants="11" duree="4" />
+    <epreuve name="JVJ53913" nbEtudiants="10" duree="4" />
+    <epreuve name="JVJ53914" nbEtudiants="11" duree="4" />
+
+    <epreuve name="JVK112" nbEtudiants="25" duree="6" />
+    <epreuve name="JVK113" nbEtudiants="28" duree="6" />
+    <epreuve name="JVK111" nbEtudiants="28" duree="6" />
+
+    <epreuve name="JVK232" nbEtudiants="13" duree="6" />
+    <epreuve name="JVK234EC" nbEtudiants="11" duree="4" />
+    <epreuve name="JVK234ST" nbEtudiants="13" duree="4" />
+    <epreuve name="JVK233" nbEtudiants="15" duree="6" />
+    <epreuve name="JVK235HI" nbEtudiants="5" duree="4" />
+    <epreuve name="JVK235SY" nbEtudiants="9" duree="4" />
+    <epreuve name="JVK231" nbEtudiants="18" duree="6" />
+
+    <epreuve name="JVK351" nbEtudiants="14" duree="8" />
+    <epreuve name="JVK353" nbEtudiants="14" duree="8" />
+    <epreuve name="JVK352" nbEtudiants="15" duree="8" />
+    <epreuve name="JVK354AC" nbEtudiants="7" duree="4" />
+    <epreuve name="JVK354EP" nbEtudiants="8" duree="4" />
+    <epreuve name="JVK354MM" nbEtudiants="7" duree="4" />
+
+    <epreuve name="JVK412" nbEtudiants="11" duree="8" />
+    <epreuve name="JVK413" nbEtudiants="10" duree="8" />
+    <epreuve name="JVK411" nbEtudiants="12" duree="8" />
+    <epreuve name="JVK414" nbEtudiants="10" duree="4" />
+
+    <epreuve name="JVK532" nbEtudiants="11" duree="8" />
+    <epreuve name="JVK534" nbEtudiants="11" duree="8" />
+    <epreuve name="JVK533" nbEtudiants="10" duree="8" />
+    <epreuve name="JVK535EC" nbEtudiants="1" duree="4" />
+    <epreuve name="JVK531" nbEtudiants="11" duree="8" />
+
+    <epreuve name="JVM1FONC" nbEtudiants="43" duree="6" />
+    <epreuve name="JVM1PHNE" nbEtudiants="36" duree="6" />
+    <epreuve name="JVM1ANAL" nbEtudiants="44" duree="6" />
+    <epreuve name="JVM1PHYS" nbEtudiants="42" duree="6" />
+    <epreuve name="JVM1FGS" nbEtudiants="27" duree="6" />
+
+    <epreuve name="JVM2ALBI" nbEtudiants="18" duree="6" />
+    <epreuve name="JVM2SERI" nbEtudiants="17" duree="6" />
+    <epreuve name="JVM2INTE" nbEtudiants="22" duree="6" />
+    <epreuve name="JVM2POLY" nbEtudiants="19" duree="6" />
+
+    <epreuve name="JVM3CADI" nbEtudiants="29" duree="6" />
+    <epreuve name="JVM3ALG1" nbEtudiants="29" duree="6" />
+    <epreuve name="JVM3CAPR" nbEtudiants="17" duree="6" />
+    <epreuve name="JVM3INTE" nbEtudiants="10" duree="6" />
+
+    <epreuve name="JVM4FOUR" nbEtudiants="8" duree="6" />
+    <epreuve name="JVM4PROB" nbEtudiants="7" duree="6" />
+    <epreuve name="JVM4ANCO" nbEtudiants="8" duree="6" />
+    <epreuve name="JVM4EQDI" nbEtudiants="8" duree="6" />
+  </epreuves>
+  <salles>
+    <salle name="Amphi_A_Metrologie_UFR_ST" capacite="100" />
+    <salle name="Salle_B7_UFR_SJEPG" capacite="100" />
+    <salle name="Salle_B1_UFR_SJEPG" capacite="100" />
+    <salle name="Amphi_Croisot_Batiment_K_UFR_ST" capacite="100" />
+    <salle name="Amphi_Fourier_UFR_SJEPG" capacite="100" />
+  </salles>
+  <epreuvesAyantDesEtudiantsEnCommun>
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1526" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1510" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1511" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1511" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1510" />
+    <epreuvesCommune idEpreuve1="JVA1510" idEpreuve2="JVA1511" />
+    <epreuvesCommune idEpreuve1="JVA1510" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1510" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1511" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1511" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1522" idEpreuve2="JVA1521" />
+
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E602" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E640" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E642" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E640" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E642" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E642" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T613" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2E653" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T616" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2T613" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T616" idEpreuve2="JVA2T641" />
+    <epreuvesCommune idEpreuve1="JVA2T616" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2T616" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2T616" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2T616" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2T616" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T641" idEpreuve2="JVA2T653" />
+    <epreuvesCommune idEpreuve1="JVA2T641" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2T641" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2T641" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2T641" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T653" idEpreuve2="JVA2T600" />
+    <epreuvesCommune idEpreuve1="JVA2T653" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2T653" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2T653" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T600" idEpreuve2="JVA2T602" />
+    <epreuvesCommune idEpreuve1="JVA2T600" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2T600" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T602" idEpreuve2="JVA2T603" />
+    <epreuvesCommune idEpreuve1="JVA2T602" idEpreuve2="JVA2T640" />
+    <epreuvesCommune idEpreuve1="JVA2T603" idEpreuve2="JVA2T640" />
+
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3E721" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3E735" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3T700" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3T714" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3T746" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3E722" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E720" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3E735" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3T700" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3T714" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3T746" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3E722" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E721" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3T700" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3T714" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3T746" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3E722" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E735" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3T714" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3T746" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3E722" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3T700" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3T746" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3E722" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3T714" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3E722" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3T746" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3E722" idEpreuve2="JVA3E723" />
+    <epreuvesCommune idEpreuve1="JVA3E722" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3E722" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3E722" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E722" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E722" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3E723" idEpreuve2="JVA3E731" />
+    <epreuvesCommune idEpreuve1="JVA3E723" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3E723" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E723" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E723" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3E731" idEpreuve2="JVA3E740" />
+    <epreuvesCommune idEpreuve1="JVA3E731" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E731" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E731" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3E740" idEpreuve2="JVA3T701" />
+    <epreuvesCommune idEpreuve1="JVA3E740" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3E740" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3T701" idEpreuve2="JVA3T703" />
+    <epreuvesCommune idEpreuve1="JVA3T701" idEpreuve2="JVA3T731" />
+    <epreuvesCommune idEpreuve1="JVA3T703" idEpreuve2="JVA3T731" />
+
+    <epreuvesCommune idEpreuve1="JVG412U" idEpreuve2="JVG413U" />
+    <epreuvesCommune idEpreuve1="JVG412U" idEpreuve2="JVG414U" />
+    <epreuvesCommune idEpreuve1="JVG413U" idEpreuve2="JVG414U" />
+
+    <epreuvesCommune idEpreuve1="JVG533U" idEpreuve2="JVG534U" />
+    <epreuvesCommune idEpreuve1="JVG533U" idEpreuve2="JVG535U" />
+    <epreuvesCommune idEpreuve1="JVG534U" idEpreuve2="JVG535U" />
+
+    <epreuvesCommune idEpreuve1="JVI3BD" idEpreuve2="JVI3MOP" />
+    <epreuvesCommune idEpreuve1="JVI3BD" idEpreuve2="JVI3ASI" />
+    <epreuvesCommune idEpreuve1="JVI3BD" idEpreuve2="JVI3SR" />
+    <epreuvesCommune idEpreuve1="JVI3MOP" idEpreuve2="JVI3ASI" />
+    <epreuvesCommune idEpreuve1="JVI3MOP" idEpreuve2="JVI3SR" />
+    <epreuvesCommune idEpreuve1="JVI3ASI" idEpreuve2="JVI3SR" />
+
+    <epreuvesCommune idEpreuve1="JVI4LWD" idEpreuve2="JVI4MOIA" />
+    <epreuvesCommune idEpreuve1="JVI4LWD" idEpreuve2="JVI4ALAO" />
+    <epreuvesCommune idEpreuve1="JVI4LWD" idEpreuve2="JVI4FDT" />
+    <epreuvesCommune idEpreuve1="JVI4LWD" idEpreuve2="JVI4PFA" />
+    <epreuvesCommune idEpreuve1="JVI4MOIA" idEpreuve2="JVI4ALAO" />
+    <epreuvesCommune idEpreuve1="JVI4MOIA" idEpreuve2="JVI4FDT" />
+    <epreuvesCommune idEpreuve1="JVI4MOIA" idEpreuve2="JVI4PFA" />
+    <epreuvesCommune idEpreuve1="JVI4ALAO" idEpreuve2="JVI4FDT" />
+    <epreuvesCommune idEpreuve1="JVI4ALAO" idEpreuve2="JVI4PFA" />
+    <epreuvesCommune idEpreuve1="JVI4FDT" idEpreuve2="JVI4PFA" />
+
+    <epreuvesCommune idEpreuve1="JVI5MRR" idEpreuve2="JVI5MRS" />
+    <epreuvesCommune idEpreuve1="JVI5MRR" idEpreuve2="JVI5RESO" />
+    <epreuvesCommune idEpreuve1="JVI5MRR" idEpreuve2="JVI5SVT" />
+    <epreuvesCommune idEpreuve1="JVI5MRR" idEpreuve2="JVI5CSD" />
+    <epreuvesCommune idEpreuve1="JVI5MRR" idEpreuve2="JVI5IDMS" />
+    <epreuvesCommune idEpreuve1="JVI5MRS" idEpreuve2="JVI5RESO" />
+    <epreuvesCommune idEpreuve1="JVI5MRS" idEpreuve2="JVI5SVT" />
+    <epreuvesCommune idEpreuve1="JVI5MRS" idEpreuve2="JVI5CSD" />
+    <epreuvesCommune idEpreuve1="JVI5MRS" idEpreuve2="JVI5IDMS" />
+    <epreuvesCommune idEpreuve1="JVI5RESO" idEpreuve2="JVI5SVT" />
+    <epreuvesCommune idEpreuve1="JVI5RESO" idEpreuve2="JVI5CSD" />
+    <epreuvesCommune idEpreuve1="JVI5RESO" idEpreuve2="JVI5IDMS" />
+    <epreuvesCommune idEpreuve1="JVI5SVT" idEpreuve2="JVI5CSD" />
+    <epreuvesCommune idEpreuve1="JVI5SVT" idEpreuve2="JVI5IDMS" />
+    <epreuvesCommune idEpreuve1="JVI5CSD" idEpreuve2="JVI5IDMS" />
+
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41816" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41818" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41819" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41802" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41803" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41804" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41806" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41818" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41819" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41802" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41803" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41804" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41816" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41818" idEpreuve2="JVJ41819" />
+    <epreuvesCommune idEpreuve1="JVJ41818" idEpreuve2="JVJ41802" />
+    <epreuvesCommune idEpreuve1="JVJ41818" idEpreuve2="JVJ41803" />
+    <epreuvesCommune idEpreuve1="JVJ41818" idEpreuve2="JVJ41804" />
+    <epreuvesCommune idEpreuve1="JVJ41818" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41818" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41819" idEpreuve2="JVJ41802" />
+    <epreuvesCommune idEpreuve1="JVJ41819" idEpreuve2="JVJ41803" />
+    <epreuvesCommune idEpreuve1="JVJ41819" idEpreuve2="JVJ41804" />
+    <epreuvesCommune idEpreuve1="JVJ41819" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41819" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41802" idEpreuve2="JVJ41803" />
+    <epreuvesCommune idEpreuve1="JVJ41802" idEpreuve2="JVJ41804" />
+    <epreuvesCommune idEpreuve1="JVJ41802" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41802" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41803" idEpreuve2="JVJ41804" />
+    <epreuvesCommune idEpreuve1="JVJ41803" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41803" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41804" idEpreuve2="JVJ41817" />
+    <epreuvesCommune idEpreuve1="JVJ41804" idEpreuve2="JVJ41814" />
+    <epreuvesCommune idEpreuve1="JVJ41817" idEpreuve2="JVJ41814" />
+
+    <epreuvesCommune idEpreuve1="JVJ53912" idEpreuve2="JVJ53913" />
+    <epreuvesCommune idEpreuve1="JVJ53912" idEpreuve2="JVJ53914" />
+    <epreuvesCommune idEpreuve1="JVJ53913" idEpreuve2="JVJ53914" />
+
+    <epreuvesCommune idEpreuve1="JVK112" idEpreuve2="JVK113" />
+    <epreuvesCommune idEpreuve1="JVK112" idEpreuve2="JVK111" />
+    <epreuvesCommune idEpreuve1="JVK113" idEpreuve2="JVK111" />
+
+    <epreuvesCommune idEpreuve1="JVK232" idEpreuve2="JVK234EC" />
+    <epreuvesCommune idEpreuve1="JVK232" idEpreuve2="JVK234ST" />
+    <epreuvesCommune idEpreuve1="JVK232" idEpreuve2="JVK233" />
+    <epreuvesCommune idEpreuve1="JVK232" idEpreuve2="JVK235HI" />
+    <epreuvesCommune idEpreuve1="JVK232" idEpreuve2="JVK235SY" />
+    <epreuvesCommune idEpreuve1="JVK232" idEpreuve2="JVK231" />
+    <epreuvesCommune idEpreuve1="JVK234EC" idEpreuve2="JVK234ST" />
+    <epreuvesCommune idEpreuve1="JVK234EC" idEpreuve2="JVK233" />
+    <epreuvesCommune idEpreuve1="JVK234EC" idEpreuve2="JVK235HI" />
+    <epreuvesCommune idEpreuve1="JVK234EC" idEpreuve2="JVK235SY" />
+    <epreuvesCommune idEpreuve1="JVK234EC" idEpreuve2="JVK231" />
+    <epreuvesCommune idEpreuve1="JVK234ST" idEpreuve2="JVK233" />
+    <epreuvesCommune idEpreuve1="JVK234ST" idEpreuve2="JVK235HI" />
+    <epreuvesCommune idEpreuve1="JVK234ST" idEpreuve2="JVK235SY" />
+    <epreuvesCommune idEpreuve1="JVK234ST" idEpreuve2="JVK231" />
+    <epreuvesCommune idEpreuve1="JVK233" idEpreuve2="JVK235HI" />
+    <epreuvesCommune idEpreuve1="JVK233" idEpreuve2="JVK235SY" />
+    <epreuvesCommune idEpreuve1="JVK233" idEpreuve2="JVK231" />
+    <epreuvesCommune idEpreuve1="JVK235HI" idEpreuve2="JVK235SY" />
+    <epreuvesCommune idEpreuve1="JVK235HI" idEpreuve2="JVK231" />
+    <epreuvesCommune idEpreuve1="JVK235SY" idEpreuve2="JVK231" />
+
+    <epreuvesCommune idEpreuve1="JVK351" idEpreuve2="JVK353" />
+    <epreuvesCommune idEpreuve1="JVK351" idEpreuve2="JVK352" />
+    <epreuvesCommune idEpreuve1="JVK351" idEpreuve2="JVK354AC" />
+    <epreuvesCommune idEpreuve1="JVK351" idEpreuve2="JVK354EP" />
+    <epreuvesCommune idEpreuve1="JVK351" idEpreuve2="JVK354MM" />
+    <epreuvesCommune idEpreuve1="JVK353" idEpreuve2="JVK352" />
+    <epreuvesCommune idEpreuve1="JVK353" idEpreuve2="JVK354AC" />
+    <epreuvesCommune idEpreuve1="JVK353" idEpreuve2="JVK354EP" />
+    <epreuvesCommune idEpreuve1="JVK353" idEpreuve2="JVK354MM" />
+    <epreuvesCommune idEpreuve1="JVK352" idEpreuve2="JVK354AC" />
+    <epreuvesCommune idEpreuve1="JVK352" idEpreuve2="JVK354EP" />
+    <epreuvesCommune idEpreuve1="JVK352" idEpreuve2="JVK354MM" />
+    <epreuvesCommune idEpreuve1="JVK354AC" idEpreuve2="JVK354EP" />
+    <epreuvesCommune idEpreuve1="JVK354AC" idEpreuve2="JVK354MM" />
+    <epreuvesCommune idEpreuve1="JVK354EP" idEpreuve2="JVK354MM" />
+
+    <epreuvesCommune idEpreuve1="JVK412" idEpreuve2="JVK413" />
+    <epreuvesCommune idEpreuve1="JVK412" idEpreuve2="JVK411" />
+    <epreuvesCommune idEpreuve1="JVK412" idEpreuve2="JVK414" />
+    <epreuvesCommune idEpreuve1="JVK413" idEpreuve2="JVK411" />
+    <epreuvesCommune idEpreuve1="JVK413" idEpreuve2="JVK414" />
+    <epreuvesCommune idEpreuve1="JVK411" idEpreuve2="JVK414" />
+
+    <epreuvesCommune idEpreuve1="JVK532" idEpreuve2="JVK534" />
+    <epreuvesCommune idEpreuve1="JVK532" idEpreuve2="JVK533" />
+    <epreuvesCommune idEpreuve1="JVK532" idEpreuve2="JVK535EC" />
+    <epreuvesCommune idEpreuve1="JVK532" idEpreuve2="JVK531" />
+    <epreuvesCommune idEpreuve1="JVK534" idEpreuve2="JVK533" />
+    <epreuvesCommune idEpreuve1="JVK534" idEpreuve2="JVK535EC" />
+    <epreuvesCommune idEpreuve1="JVK534" idEpreuve2="JVK531" />
+    <epreuvesCommune idEpreuve1="JVK533" idEpreuve2="JVK535EC" />
+    <epreuvesCommune idEpreuve1="JVK533" idEpreuve2="JVK531" />
+    <epreuvesCommune idEpreuve1="JVK535EC" idEpreuve2="JVK531" />
+
+    <epreuvesCommune idEpreuve1="JVM1FONC" idEpreuve2="JVM1PHNE" />
+    <epreuvesCommune idEpreuve1="JVM1FONC" idEpreuve2="JVM1ANAL" />
+    <epreuvesCommune idEpreuve1="JVM1FONC" idEpreuve2="JVM1PHYS" />
+    <epreuvesCommune idEpreuve1="JVM1FONC" idEpreuve2="JVM1FGS" />
+    <epreuvesCommune idEpreuve1="JVM1PHNE" idEpreuve2="JVM1ANAL" />
+    <epreuvesCommune idEpreuve1="JVM1PHNE" idEpreuve2="JVM1PHYS" />
+    <epreuvesCommune idEpreuve1="JVM1PHNE" idEpreuve2="JVM1FGS" />
+    <epreuvesCommune idEpreuve1="JVM1ANAL" idEpreuve2="JVM1PHYS" />
+    <epreuvesCommune idEpreuve1="JVM1ANAL" idEpreuve2="JVM1FGS" />
+    <epreuvesCommune idEpreuve1="JVM1PHYS" idEpreuve2="JVM1FGS" />
+
+    <epreuvesCommune idEpreuve1="JVM2ALBI" idEpreuve2="JVM2SERI" />
+    <epreuvesCommune idEpreuve1="JVM2ALBI" idEpreuve2="JVM2INTE" />
+    <epreuvesCommune idEpreuve1="JVM2ALBI" idEpreuve2="JVM2POLY" />
+    <epreuvesCommune idEpreuve1="JVM2SERI" idEpreuve2="JVM2INTE" />
+    <epreuvesCommune idEpreuve1="JVM2SERI" idEpreuve2="JVM2POLY" />
+    <epreuvesCommune idEpreuve1="JVM2INTE" idEpreuve2="JVM2POLY" />
+
+    <epreuvesCommune idEpreuve1="JVM3CADI" idEpreuve2="JVM3ALG1" />
+    <epreuvesCommune idEpreuve1="JVM3CADI" idEpreuve2="JVM3CAPR" />
+    <epreuvesCommune idEpreuve1="JVM3CADI" idEpreuve2="JVM3INTE" />
+    <epreuvesCommune idEpreuve1="JVM3ALG1" idEpreuve2="JVM3CAPR" />
+    <epreuvesCommune idEpreuve1="JVM3ALG1" idEpreuve2="JVM3INTE" />
+    <epreuvesCommune idEpreuve1="JVM3CAPR" idEpreuve2="JVM3INTE" />
+
+    <epreuvesCommune idEpreuve1="JVM4FOUR" idEpreuve2="JVM4PROB" />
+    <epreuvesCommune idEpreuve1="JVM4FOUR" idEpreuve2="JVM4ANCO" />
+    <epreuvesCommune idEpreuve1="JVM4FOUR" idEpreuve2="JVM4EQDI" />
+    <epreuvesCommune idEpreuve1="JVM4PROB" idEpreuve2="JVM4ANCO" />
+    <epreuvesCommune idEpreuve1="JVM4PROB" idEpreuve2="JVM4EQDI" />
+    <epreuvesCommune idEpreuve1="JVM4ANCO" idEpreuve2="JVM4EQDI" />
+  </epreuvesAyantDesEtudiantsEnCommun>
+</optimisation>
