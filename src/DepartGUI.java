@@ -15,6 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -70,48 +71,48 @@ public class DepartGUI extends Application {
         String tmpEpreuves = "", tmpListEpreuves = "", listTasks="", listSalles = "";
 
         boolean first = true;
-        for (Epreuve tmpA : epreuves){
+        for (Epreuve tmpEpreuve : epreuves){
 
             //tasks
             listTasks = listTasks + "task(";
-            if (tmpA.getStart()<0){
-                listTasks = listTasks + "S"+tmpA.getId();
+            if (tmpEpreuve.getStart()<0){
+                listTasks = listTasks + "S"+tmpEpreuve.getId();
             }else{
-                listTasks = listTasks + tmpA.getStart();
+                listTasks = listTasks + tmpEpreuve.getStart();
             }
-            listTasks = listTasks + ", " + tmpA.getDuree()+", ";
-            if (tmpA.getEnd()<0){
-                listTasks = listTasks + "E"+tmpA.getId();
+            listTasks = listTasks + ", " + tmpEpreuve.getDuree()+", ";
+            if (tmpEpreuve.getEnd()<0){
+                listTasks = listTasks + "E"+tmpEpreuve.getId();
             }else{
-                listTasks = listTasks + tmpA.getEnd();
+                listTasks = listTasks + tmpEpreuve.getEnd();
             }
 
-            if (tmpA.getId() == epreuves.size()){
-                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpA.getId()+ ","+ "E"+tmpA.getId()+ ",Salle"+tmpA.getId()+"]\n";
-                listTasks = listTasks + ", "+tmpA.getNbEtudiants()+", Salle"+tmpA.getId()+")\n";
+            if (tmpEpreuve.getId() == epreuves.size()){
+                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId()+ ",Salle"+tmpEpreuve.getId()+"]\n";
+                listTasks = listTasks + ", "+tmpEpreuve.getNbEtudiants()+", Salle"+tmpEpreuve.getId()+")\n";
             }else{
-                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpA.getId()+ ","+ "E"+tmpA.getId()+ ",Salle"+tmpA.getId()+"],\n";
+                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId()+ ",Salle"+tmpEpreuve.getId()+"],\n";
 
-                listTasks = listTasks + ", "+tmpA.getNbEtudiants()+", Salle"+tmpA.getId()+"),\n";
+                listTasks = listTasks + ", "+tmpEpreuve.getNbEtudiants()+", Salle"+tmpEpreuve.getId()+"),\n";
             }
 
 
             //liste des epreuves
             if (first){
-                if (tmpA.getStart()<0){
-                    tmpListEpreuves =  "["+ "S"+tmpA.getId()+ ","+ "E"+tmpA.getId();
+                if (tmpEpreuve.getStart()<0){
+                    tmpListEpreuves =  "["+ "S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId();
                 }else{
-                    tmpListEpreuves =  "["+tmpA.getStart()+ ","+tmpA.getEnd();
+                    tmpListEpreuves =  "["+tmpEpreuve.getStart()+ ","+tmpEpreuve.getEnd();
                 }
-                listSalles = "[Salle"+tmpA.getId();
+                listSalles = "[Salle"+tmpEpreuve.getId();
                 first = false;
             }else{
-                if (tmpA.getStart()<0){
-                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpA.getId()+ ","+ "E"+tmpA.getId();
+                if (tmpEpreuve.getStart()<0){
+                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId();
                 }else{
-                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpA.getId()+ ","+ "E"+tmpA.getId();
+                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId();
                 }
-                listSalles = listSalles + ",Salle"+tmpA.getId();
+                listSalles = listSalles + ",Salle"+tmpEpreuve.getId();
             }
         }
         tmpListEpreuves = tmpListEpreuves + "]";
@@ -242,7 +243,7 @@ public class DepartGUI extends Application {
         return text;
     }
 
-    public void callSicstus(String filename, int prioriteSalle, int prioriteDuree, int prioriteDist, int tOut, int dTime){
+    public void callSicstus(String inputFile, int prioriteSalle, int prioriteDuree, int prioriteDist, int tOut, int dTime, String outputFile){
         SICStus sp = null;
         HashMap results;
 
@@ -253,7 +254,7 @@ public class DepartGUI extends Application {
             sp = new SICStus();
 
             // Chargement d'un fichier prolog .pl
-            sp.load("./"+filename);
+            sp.load("./"+inputFile);
 
         }
         // Exception déclenchée par SICStus lors de la création de l'objet sp
@@ -288,9 +289,9 @@ public class DepartGUI extends Application {
             i = 1;
             for (Epreuve e: epreuves) {
                 if (epreuves.size() == i){
-                    tmpEpreuves += "E" + e.getId() + "]";
+                    tmpEpreuves += e.getName() + "]";
                 }else{
-                    tmpEpreuves += "E" + e.getId() + ",";
+                    tmpEpreuves += e.getName() + ",";
                 }
                 i++;
 
@@ -318,7 +319,24 @@ public class DepartGUI extends Application {
             // on vérifie qu'il y a une solution
             if (!(results.isEmpty()))
             {
-                System.out.println(results);
+
+                PrintWriter out = new PrintWriter(outputFile);
+
+                //System.out.println(results);
+                for (Object r: results.entrySet()){
+                    System.out.println(r.toString());
+                    out.print(r.toString() + "\n");
+                }
+
+                // fermeture de la requète
+                System.err.println("Fermeture requete");
+                qu.close();
+                out.close();
+                results.clear();
+
+                //System.out.println(results.get("E1").toString());
+
+                //return results.toString();
 
                 // Extraction de la solution.
                 String e1 = results.get("E1").toString();
@@ -326,14 +344,12 @@ public class DepartGUI extends Application {
             }
             else
             {
-                System.out.println("Error : No solution !");
+                // fermeture de la requète
+                System.err.println("Fermeture requete");
+                qu.close();
+                results.clear();
+                //return "Error: No solution!";//System.out.println("Error : No solution !");
             }
-
-            // fermeture de la requète
-            System.err.println("Fermeture requete");
-            qu.close();
-            results.clear();
-
         }
         catch (SPException e) {
             System.err.println("Exception prolog\n" + e);
@@ -348,7 +364,7 @@ public class DepartGUI extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Emploi de temps");
-        primaryStage.setScene(new Scene(root, 600, 375));
+        primaryStage.setScene(new Scene(root, 800, 375));
         primaryStage.show();
     }
 
