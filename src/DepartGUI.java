@@ -224,10 +224,9 @@ public class DepartGUI extends Application {
                 "\n" +
                 "        ToMinimize #= PriorityDuration * (" + regroupementsOptimisees.substring(0, regroupementsOptimisees.length() - 1) + ") + PrioritySalles * Result,"+// * " + /* TODO : METTRE LES DUREES DES DIFFERENTES PROMOTIONS*/
                 "\n      append(Total, " + listSalles + ", Vars),\n" +
-                "        format('Before.~n', []),\n" +
                 "\n" +
                 "        statistics(runtime, [T0| _]),\n" +
-                "        labeling([minimize(ToMinimize), time_out( TimeOut, _LabelingResult)], Vars),\n" +
+                "        labeling([minimize(ToMinimize), most_constrained, time_out( TimeOut, _LabelingResult)], Vars),\n" +
                 "        statistics(runtime, [T1|_]),\n" +
                 "        TLabelling is T1 - T0,\n" +
                 "        format('labeling took ~3d sec.~n', [TLabelling]).\n" +
@@ -282,6 +281,7 @@ public class DepartGUI extends Application {
                 }else {
                     tmpSalles += s.toString() + ", ";
                 }
+                i++;
             }
             tmpSalles += "]";
 
@@ -313,6 +313,7 @@ public class DepartGUI extends Application {
                     ", "+tmpSalles+", "+tmpEpreuves+", End).";
 
             System.out.println(requete);
+
             Query qu = sp.openQuery(requete, results);
             qu.nextSolution();
 
@@ -328,35 +329,22 @@ public class DepartGUI extends Application {
                     out.print(r.toString() + "\n");
                 }
 
-                // fermeture de la requète
-                System.err.println("Fermeture requete");
-                qu.close();
                 out.close();
-                results.clear();
-
-                //System.out.println(results.get("E1").toString());
-
-                //return results.toString();
 
                 // Extraction de la solution.
-                String e1 = results.get("E1").toString();
                 // ...
             }
-            else
-            {
-                // fermeture de la requète
-                System.err.println("Fermeture requete");
-                qu.close();
-                results.clear();
-                //return "Error: No solution!";//System.out.println("Error : No solution !");
-            }
+            // fermeture de la requète
+            System.err.println("Fermeture requete");
+            qu.close();
         }
         catch (SPException e) {
             System.err.println("Exception prolog\n" + e);
         }
         // autres exceptions levées par l'utilisation du Query.nextSolution()
         catch (Exception e) {
-            System.err.println("Other exception : " + e);
+            System.err.println("Other exception : " + e + " Message : " + e.getMessage());
+
         }
     }
 

@@ -70,9 +70,8 @@
     <epreuve name="Electronique" nbEtudiants="30" duree="3" />
   </epreuves>
   <salles>
-    <salle name="Amphi_A" capacite="94">
-      <creneau-occupe jour="1" debut="8" fin="10" />
-    </salle>
+    <salle name="Amphi_A" capacite="94"/>
+    <salle name="Amphi_B" capacite="94"/>
   </salles>
   <epreuvesAyantDesEtudiantsEnCommun>
     <epreuvesCommune idEpreuve1="Graph" idEpreuve2="GL" />

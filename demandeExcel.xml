@@ -321,11 +321,29 @@
     <epreuve name="JVM4EQDI" nbEtudiants="8" duree="6" />
   </epreuves>
   <salles>
-    <salle name="Amphi_A_Metrologie_UFR_ST" capacite="100" />
-    <salle name="Salle_B7_UFR_SJEPG" capacite="100" />
-    <salle name="Salle_B1_UFR_SJEPG" capacite="100" />
-    <salle name="Amphi_Croisot_Batiment_K_UFR_ST" capacite="100" />
-    <salle name="Amphi_Fourier_UFR_SJEPG" capacite="100" />
+    <salle name="Amphi1" capacite="100">
+      <creneau-occupe jour="0" debut="0" fin="48"/>
+      <creneau-occupe jour="1" debut="0" fin="48"/>
+      <creneau-occupe jour="2" debut="0" fin="48"/>
+      <creneau-occupe jour="3" debut="0" fin="48"/>
+      <creneau-occupe jour="4" debut="0" fin="48"/>
+      <creneau-occupe jour="5" debut="0" fin="48"/>
+    </salle>
+    <salle name="AmphiFourier" capacite="50">
+      <creneau-occupe jour="0" debut="0" fin="48"/>
+      <creneau-occupe jour="1" debut="0" fin="48"/>
+      <creneau-occupe jour="2" debut="0" fin="48"/>
+      <creneau-occupe jour="3" debut="0" fin="48"/>
+      <creneau-occupe jour="4" debut="0" fin="48"/>
+      <creneau-occupe jour="5" debut="0" fin="48"/>
+    </salle>
+    <salle name="B7" capacite="100" />
+    <salle name="B1" capacite="80" />
+    <salle name="Croisot" capacite="20" />
+    <salle name="SalleDePlus" capacite="100" />
+    <salle name="Croiot" capacite="100" />
+    <salle name="SalleePlus" capacite="100" />
+
   </salles>
   <epreuvesAyantDesEtudiantsEnCommun>
     <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1526" />
