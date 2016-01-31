@@ -2,13 +2,17 @@ import java.util.ArrayList;
 
 public class Salle{
     private String name;
+    private int id;
     private int capacite;
     private ArrayList<Creneau> creneaux;
+    static int nbTotal = 0;
 
     public Salle(String name, int capacite){
         this.name = name;
         this.capacite = capacite;
         creneaux = new ArrayList<Creneau>();
+        nbTotal++;
+        id = nbTotal;
     }
 
     public void addCreneau(int jour, int debut, int fin){
@@ -31,5 +35,9 @@ public class Salle{
         text += "]]";
 
         return text;
+    }
+
+    public int getId(){
+        return id;
     }
 }

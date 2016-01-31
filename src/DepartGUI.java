@@ -19,15 +19,19 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nomce on 3/7/14.
  */
 public class DepartGUI extends Application {
-    private ArrayList<Epreuve> epreuves;
-    private ArrayList<Salle> salles;
+    private HashMap<Integer,Epreuve> epreuves;
+    private HashMap<Integer,Salle> salles;
     private ArrayList<EpreuvesCommune> epreuvesCommunes;
     private ArrayList<Regroupement> regroupements;
 
@@ -55,6 +59,31 @@ public class DepartGUI extends Application {
         /* END XML Parser */
     }
 
+    public void addTimetable(String[] input) {
+        String[] t;
+        Epreuve tmp;
+        for(int i = 0; i < input.length; i++){
+            if (!input[i].startsWith("End=")) {
+                //split Analyse=.(50,.(55,.(1,[]))) in an array [Analyse, 50, 55,1]
+                t = input[i].substring(0,input[i].length() - 6).split("=.\\(|,.\\(|,\\[\\]\\)\\)\\)");
+                t[0] = t[0].substring(1);
+                //System.out.println(t[0] + " " + t[1] + " " + t[2] + " " + t[3]);
+                tmp = epreuves.get(Integer.parseInt(t[0]));
+                tmp.setDebut(Integer.parseInt(t[1]));
+                tmp.setFin(Integer.parseInt(t[2]));
+                tmp.setSalle(Integer.parseInt(t[3]));
+                System.out.println(tmp);
+            }
+        }
+    }
+
+    public static String readFile(String path, Charset encoding)
+            throws IOException
+    {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
+
     private static String convertToFileURL(String filename) {
         String path = new File(filename).getAbsolutePath();
         if (File.separatorChar != '/') {
@@ -71,48 +100,48 @@ public class DepartGUI extends Application {
         String tmpEpreuves = "", tmpListEpreuves = "", listTasks="", listSalles = "";
 
         boolean first = true;
-        for (Epreuve tmpEpreuve : epreuves){
+        for(Map.Entry<Integer, Epreuve> tmpEpreuve : epreuves.entrySet()) {
 
             //tasks
             listTasks = listTasks + "task(";
-            if (tmpEpreuve.getStart()<0){
-                listTasks = listTasks + "S"+tmpEpreuve.getId();
+            if (tmpEpreuve.getValue().getStart()<0){
+                listTasks = listTasks + "S"+tmpEpreuve.getValue().getId();
             }else{
-                listTasks = listTasks + tmpEpreuve.getStart();
+                listTasks = listTasks + tmpEpreuve.getValue().getStart();
             }
-            listTasks = listTasks + ", " + tmpEpreuve.getDuree()+", ";
-            if (tmpEpreuve.getEnd()<0){
-                listTasks = listTasks + "E"+tmpEpreuve.getId();
+            listTasks = listTasks + ", " + tmpEpreuve.getValue().getDuree()+", ";
+            if (tmpEpreuve.getValue().getEnd()<0){
+                listTasks = listTasks + "E"+tmpEpreuve.getValue().getId();
             }else{
-                listTasks = listTasks + tmpEpreuve.getEnd();
+                listTasks = listTasks + tmpEpreuve.getValue().getEnd();
             }
 
-            if (tmpEpreuve.getId() == epreuves.size()){
-                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId()+ ",Salle"+tmpEpreuve.getId()+"]\n";
-                listTasks = listTasks + ", "+tmpEpreuve.getNbEtudiants()+", Salle"+tmpEpreuve.getId()+")\n";
+            if (tmpEpreuve.getValue().getId() == epreuves.size()){
+                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpEpreuve.getValue().getId()+ ","+ "E"+tmpEpreuve.getValue().getId()+ ",Salle"+tmpEpreuve.getValue().getId()+"]\n";
+                listTasks = listTasks + ", "+tmpEpreuve.getValue().getNbEtudiants()+", Salle"+tmpEpreuve.getValue().getId()+")\n";
             }else{
-                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId()+ ",Salle"+tmpEpreuve.getId()+"],\n";
+                tmpEpreuves = tmpEpreuves + "["+ "S"+tmpEpreuve.getValue().getId()+ ","+ "E"+tmpEpreuve.getValue().getId()+ ",Salle"+tmpEpreuve.getValue().getId()+"],\n";
 
-                listTasks = listTasks + ", "+tmpEpreuve.getNbEtudiants()+", Salle"+tmpEpreuve.getId()+"),\n";
+                listTasks = listTasks + ", "+tmpEpreuve.getValue().getNbEtudiants()+", Salle"+tmpEpreuve.getValue().getId()+"),\n";
             }
 
 
             //liste des epreuves
             if (first){
-                if (tmpEpreuve.getStart()<0){
-                    tmpListEpreuves =  "["+ "S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId();
+                if (tmpEpreuve.getValue().getStart()<0){
+                    tmpListEpreuves =  "["+ "S"+tmpEpreuve.getValue().getId()+ ","+ "E"+tmpEpreuve.getValue().getId();
                 }else{
-                    tmpListEpreuves =  "["+tmpEpreuve.getStart()+ ","+tmpEpreuve.getEnd();
+                    tmpListEpreuves =  "["+tmpEpreuve.getValue().getStart()+ ","+tmpEpreuve.getValue().getEnd();
                 }
-                listSalles = "[Salle"+tmpEpreuve.getId();
+                listSalles = "[Salle"+tmpEpreuve.getValue().getId();
                 first = false;
             }else{
-                if (tmpEpreuve.getStart()<0){
-                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId();
+                if (tmpEpreuve.getValue().getStart()<0){
+                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpEpreuve.getValue().getId()+ ","+ "E"+tmpEpreuve.getValue().getId();
                 }else{
-                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpEpreuve.getId()+ ","+ "E"+tmpEpreuve.getId();
+                    tmpListEpreuves = tmpListEpreuves + ",S"+tmpEpreuve.getValue().getId()+ ","+ "E"+tmpEpreuve.getValue().getId();
                 }
-                listSalles = listSalles + ",Salle"+tmpEpreuve.getId();
+                listSalles = listSalles + ",Salle"+tmpEpreuve.getValue().getId();
             }
         }
         tmpListEpreuves = tmpListEpreuves + "]";
@@ -275,11 +304,11 @@ public class DepartGUI extends Application {
 
             String tmpSalles = "[";
             int i = 1;
-            for (Salle s : salles) {
+            for(Map.Entry<Integer, Salle> entry : salles.entrySet()) {
                 if (salles.size() == i){
-                    tmpSalles += s.toString();
+                    tmpSalles += entry.getValue().toString();
                 }else {
-                    tmpSalles += s.toString() + ", ";
+                    tmpSalles += entry.getValue().toString() + ", ";
                 }
                 i++;
             }
@@ -287,11 +316,11 @@ public class DepartGUI extends Application {
 
             String tmpEpreuves = "[";
             i = 1;
-            for (Epreuve e: epreuves) {
+            for(Map.Entry<Integer, Epreuve> entry : epreuves.entrySet()) {
                 if (epreuves.size() == i){
-                    tmpEpreuves += e.getName() + "]";
+                    tmpEpreuves += "E"+ entry.getValue().getId() + "]";
                 }else{
-                    tmpEpreuves += e.getName() + ",";
+                    tmpEpreuves += "E"+ entry.getValue().getId() + ",";
                 }
                 i++;
 

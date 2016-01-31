@@ -6,8 +6,9 @@ public class Epreuve{
     private int fin;
     private int jour;
     private int id;
+    private int salle;
 
-    public Epreuve(int id, String name, int nb, int jour, int debut, int duree, int fin){
+    public Epreuve(int id, String name, int nb, int jour, int debut, int duree, int fin, int salle){
         this.name = name;
         this.nbEtudiants = nb;
         this.jour = jour;
@@ -15,10 +16,11 @@ public class Epreuve{
         this.duree = duree;
         this.fin = fin;
         this.id = id;
+        this.salle = salle;
     }
 
     public String toString(){
-        return "Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin;
+        return "Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin + " Salle: " + salle;
     }
 
     public int getStart(){
@@ -51,5 +53,21 @@ public class Epreuve{
 
     public int getId(){
         return id;
+    }
+
+    public void setDebut(int debut){
+        this.debut = debut;
+    }
+
+    public void setFin(int fin){
+        this.fin = fin;
+    }
+
+    public int getIdSalle(){
+        return salle;
+    }
+
+    public void setSalle(int salle){
+        this.salle = salle;
     }
 }

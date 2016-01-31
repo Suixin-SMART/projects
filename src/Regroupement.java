@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringJoiner;
 
 /**
@@ -20,11 +22,12 @@ public class Regroupement {
         matieres.add(new Matiere(name, nbEtudiants));
     }
 
-    public void matchEpreuves(ArrayList<Epreuve> input){
+    public void matchEpreuves(HashMap<Integer,Epreuve> input){
         for (Matiere m : matieres) {
-            for (Epreuve e : input){
-                if (m.getName().equals(e.getName())){
-                    epreuves.add(e);
+
+            for(Map.Entry<Integer, Epreuve> entry : input.entrySet()) {
+                if (m.getName().equals(entry.getValue().getName())){
+                    epreuves.add(entry.getValue());
                 }
             }
         }

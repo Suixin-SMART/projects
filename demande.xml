@@ -72,6 +72,7 @@
   <salles>
     <salle name="Amphi_A" capacite="94"/>
     <salle name="Amphi_B" capacite="94"/>
+    <salle name="Amphi_C" capacite="94"/>
   </salles>
   <epreuvesAyantDesEtudiantsEnCommun>
     <epreuvesCommune idEpreuve1="Graph" idEpreuve2="GL" />

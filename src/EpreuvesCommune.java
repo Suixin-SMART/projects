@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EpreuvesCommune{
   private Epreuve epreuve1;
@@ -16,8 +18,10 @@ public class EpreuvesCommune{
       tempEpreuve2 = e2;
   }
 
-    public void storeEpreuvesObjects(ArrayList<Epreuve> epreuves){
-        for (Epreuve e : epreuves){
+    public void storeEpreuvesObjects(HashMap<Integer,Epreuve> epreuves){
+
+        for(Map.Entry<Integer, Epreuve> entry : epreuves.entrySet()) {
+            Epreuve e = entry.getValue();
             if (e.getName().equals(tempEpreuve1)){
                 epreuve1 = e;
             }

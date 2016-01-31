@@ -7,11 +7,13 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class XMLParseur extends DefaultHandler{
 
-    private ArrayList<Epreuve> epreuves;
-    private ArrayList<Salle> salles;
+    private HashMap<Integer,Epreuve> epreuves;
+    private HashMap<Integer,Salle> salles;
     private ArrayList<EpreuvesCommune> epreuvesCommunes;
     private ArrayList<Regroupement> regroupements;
     private Epreuve epreuve;
@@ -21,21 +23,23 @@ public class XMLParseur extends DefaultHandler{
     private Regroupement regroupement;
     private int nbEpreuves = 1;
 
-    public ArrayList<Epreuve> getEpreuves(){
+    public HashMap<Integer,Epreuve> getEpreuves(){
         return epreuves;
     }
-    public ArrayList<Salle> getSalles(){
+    public HashMap<Integer,Salle> getSalles(){
         return salles;
     }
     public ArrayList<EpreuvesCommune> getEpreuvesCommunes(){
-        for(EpreuvesCommune e : epreuvesCommunes){
+
+        for(EpreuvesCommune e : epreuvesCommunes) {
             e.storeEpreuvesObjects(epreuves);
         }
         return epreuvesCommunes;
     }
 
     public ArrayList<Regroupement> getRegroupements(){
-        for(Regroupement e : regroupements){
+
+        for(Regroupement e : regroupements) {
             e.matchEpreuves(epreuves);
         }
         return regroupements;
@@ -43,8 +47,8 @@ public class XMLParseur extends DefaultHandler{
 
     @Override
     public void startDocument() throws SAXException {
-        epreuves = new ArrayList<Epreuve>();
-        salles = new ArrayList<Salle>();
+        epreuves = new HashMap<Integer,Epreuve>(100);
+        salles = new HashMap<Integer,Salle>();
         epreuvesCommunes = new ArrayList<EpreuvesCommune>();
         regroupements = new ArrayList<Regroupement>();
     }
@@ -52,14 +56,15 @@ public class XMLParseur extends DefaultHandler{
     @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts)throws SAXException {
         if(localName == "epreuve"){
-            int jour, heureFin, heureDebut;
+            int jour, heureFin, heureDebut,salleId;
             try{jour = Integer.parseInt(atts.getValue("jour"));}catch(NumberFormatException e){jour = -1;}
             try{heureDebut = Integer.parseInt(atts.getValue("heureDebut"));}catch(NumberFormatException e){heureDebut = -1;}
             try{heureFin = Integer.parseInt(atts.getValue("heureFin"));}catch(NumberFormatException e){heureFin = -1;}
+            try{salleId = Integer.parseInt(atts.getValue("salle"));}catch(NumberFormatException e){salleId = -1;}
             epreuve = new Epreuve(nbEpreuves++,atts.getValue("name"),
                                   Integer.parseInt(atts.getValue("nbEtudiants")),
                                     jour,heureDebut,
-                                  Integer.parseInt(atts.getValue("duree")),heureFin);
+                                  Integer.parseInt(atts.getValue("duree")),heureFin,salleId);
         }else if(localName == "salle"){
             salle = new Salle(atts.getValue("name"),Integer.parseInt(atts.getValue("capacite")));
         }else if(localName == "epreuvesCommune"){
@@ -86,9 +91,9 @@ public class XMLParseur extends DefaultHandler{
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
         if (localName == "epreuve") {
-            epreuves.add(epreuve);
+            epreuves.put(epreuve.getId(),epreuve);
         }else if(localName == "salle"){
-            salles.add(salle);
+            salles.put(salle.getId(),salle);
         }else if(localName == "epreuvesCommune"){
             epreuvesCommunes.add(epreuveCommune);
         }else if(localName == "regroupement"){
