@@ -67,7 +67,7 @@ public class DepartGUI extends Application {
                 //split Analyse=.(50,.(55,.(1,[]))) in an array [Analyse, 50, 55,1]
                 t = input[i].substring(0,input[i].length() - 6).split("=.\\(|,.\\(|,\\[\\]\\)\\)\\)");
                 t[0] = t[0].substring(1);
-                //System.out.println(t[0] + " " + t[1] + " " + t[2] + " " + t[3]);
+                System.out.println(t[0] + " " + t[1] + " " + t[2] + " " + t[3]);
                 tmp = epreuves.get(Integer.parseInt(t[0]));
                 tmp.setDebut(Integer.parseInt(t[1]));
                 tmp.setFin(Integer.parseInt(t[2]));
@@ -217,7 +217,7 @@ public class DepartGUI extends Application {
                 "        Total = " + tmpListEpreuves + ",\n" +
                 "\n" +
                 "        % Déclaration du lundi 0h au vendredi 23h59 par 1/2 heure (48 points par jour).\n" +
-                "        domain(Total, 0, 240),\n"+
+                "        domain(Total, 0, 480),\n"+
                 "Tasks = [\n" + listTasks + "],\n"+
                 "append(Tasks, ListeTasksSallesPrises, NewTasks),\n";
 

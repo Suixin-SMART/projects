@@ -56,11 +56,12 @@ public class Epreuve{
     }
 
     public void setDebut(int debut){
-        this.debut = debut;
+        jour = (debut / 96) % 5 +1;
+        this.debut = debut - 96 * (jour-1);
     }
 
     public void setFin(int fin){
-        this.fin = fin;
+        this.fin = fin - 96 * (jour-1);
     }
 
     public int getIdSalle(){
