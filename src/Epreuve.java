@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Epreuve{
     private String name;
     private int nbEtudiants;
@@ -6,7 +8,8 @@ public class Epreuve{
     private int fin;
     private int jour;
     private int id;
-    private int salle;
+    private Salle salle;
+    private int salleTemp;
 
     public Epreuve(int id, String name, int nb, int jour, int debut, int duree, int fin, int salle){
         this.name = name;
@@ -16,11 +19,16 @@ public class Epreuve{
         this.duree = duree;
         this.fin = fin;
         this.id = id;
-        this.salle = salle;
+        this.salleTemp = salle;
     }
 
     public String toString(){
-        return "Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin + " Salle: " + salle;
+        return "Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin + " Salle: " + salle.getName();
+    }
+
+    public void setSalleAfter(HashMap<Integer,Salle> salles){
+        salle = salles.get(Integer.valueOf(salleTemp));
+
     }
 
     public int getStart(){
@@ -65,10 +73,35 @@ public class Epreuve{
     }
 
     public int getIdSalle(){
-        return salle;
+        return salle.getId();
     }
 
-    public void setSalle(int salle){
-        this.salle = salle;
+    public void setSalle(Salle s){
+        this.salle = s;
+    }
+
+    public String toStringXML(){
+        //<epreuve name="Graph" nbEtudiants="54" duree="4" />
+        String tmp = "      <epreuve name=\"" + name + "\" nbEtudiants=\"" + nbEtudiants + "\" duree=\"" + duree + "\" ";
+        if (jour > -1){
+            tmp += "jour=\"" + jour + "\" ";
+        }
+
+        if (debut > -1){
+            tmp += "heureDebut=\"" + debut + "\" ";
+        }
+
+        if (fin > -1){
+            tmp += "heureFin=\"" + fin + "\" ";
+        }
+
+        if (salle == null){
+            tmp += "salle=\"" + null + "\" ";
+        }else{
+            tmp += "salle=\"" + salle.getName() + "\" ";
+        }
+
+        tmp += "/>\n";
+        return tmp;
     }
 }

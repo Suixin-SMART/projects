@@ -10,7 +10,6 @@ public class Regroupement {
     private String name;
     private ArrayList<Matiere> matieres;
     private ArrayList<Epreuve> epreuves;
-    private boolean transfer = false;
 
     public Regroupement(String name){
         this.name = name;
@@ -43,4 +42,15 @@ public class Regroupement {
     public String getName(){
         return name;
     }
+
+    public String toStringXML(){
+        //<regroupement name="K3">
+        String tmp = "      <regroupement name=\"" + name + "\">\n";
+        for(Matiere e : matieres) {
+            tmp += e.toStringXML();
+        }
+        tmp += "      </regroupement>\n";
+        return tmp;
+    }
+
 }

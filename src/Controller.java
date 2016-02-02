@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class Controller {
 
     @FXML
-    private TextField importField,exportField,prioriteSalle,prioriteDuree,prioriteDist,timeout,deltaTime,resultField;
+    private TextField importField,exportField,prioriteSalle,prioriteDuree,prioriteDist,timeout,deltaTime,resultField,debutMin,finMax;
     @FXML
     private Button commencerButton;
     DepartGUI dep;
@@ -32,16 +32,24 @@ public class Controller {
     public void action() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         dep = new DepartGUI(importField.getText());
         PrintWriter out = new PrintWriter(exportField.getText());
-        out.print(dep.toString());
+        out.print(dep.generateFileProlog(Integer.parseInt(debutMin.getText()),Integer.parseInt(finMax.getText())));
         out.close();
     }
 
     public void action2() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
-        dep.callSicstus(exportField.getText(),Integer.parseInt(prioriteSalle.getText()),Integer.parseInt(prioriteDuree.getText()),Integer.parseInt(prioriteDist.getText()),Integer.parseInt(timeout.getText()),Integer.parseInt(deltaTime.getText()),resultField.getText());
+        String resultFile = resultField.getText() + ".txt";
+        dep.callSicstus(exportField.getText(),Integer.parseInt(prioriteSalle.getText()),
+                Integer.parseInt(prioriteDuree.getText()),Integer.parseInt(prioriteDist.getText()),
+                Integer.parseInt(timeout.getText()),Integer.parseInt(deltaTime.getText()),resultFile);
     }
 
     public void action3() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
-       String[] result = DepartGUI.readFile(resultField.getText(), Charset.defaultCharset()).split("\n");
+        String inputFile = resultField.getText() + ".txt";
+        String outputFile = resultField.getText() + ".xml";
+        String[] result = DepartGUI.readFile(inputFile, Charset.defaultCharset()).split("\n");
         dep.addTimetable(result);
+        try(  PrintWriter out = new PrintWriter(outputFile)  ){
+            out.println( dep.generateXML() );
+        }
     }
 }

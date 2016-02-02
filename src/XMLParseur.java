@@ -24,6 +24,9 @@ public class XMLParseur extends DefaultHandler{
     private int nbEpreuves = 1;
 
     public HashMap<Integer,Epreuve> getEpreuves(){
+        for(Map.Entry<Integer, Epreuve> entry : epreuves.entrySet()) {
+            entry.getValue().setSalleAfter(salles);
+        }
         return epreuves;
     }
     public HashMap<Integer,Salle> getSalles(){
@@ -47,7 +50,7 @@ public class XMLParseur extends DefaultHandler{
 
     @Override
     public void startDocument() throws SAXException {
-        epreuves = new HashMap<Integer,Epreuve>(100);
+        epreuves = new HashMap<Integer,Epreuve>();
         salles = new HashMap<Integer,Salle>();
         epreuvesCommunes = new ArrayList<EpreuvesCommune>();
         regroupements = new ArrayList<Regroupement>();

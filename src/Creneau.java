@@ -12,6 +12,11 @@ public class Creneau{
     }
 
     public String toString(){
-        return  debut + ", " + fin;
+        return (debut + ((jour - 1) * 96)) + ", " + (fin + ((jour - 1) * 96));
+    }
+
+    public String toStringXML(){
+        //<creneau-occupe jour="" debut="" fin=""/>
+        return  "           <creneau-occupe jour=\"" + jour + "\" debut=\"" + debut + "\" fin=\"" + fin + "\"/>\n";
     }
 }

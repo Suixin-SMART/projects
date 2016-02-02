@@ -17,4 +17,9 @@ public class Matiere {
     public int getNbEtudiants() {
         return nbEtudiants;
     }
+
+    public String toStringXML(){
+        //<matiere name="RESO" nbEtudiants="54" />
+        return "        <matiere name=\"" + name + "\" nbEtudiants=\"" + nbEtudiants + "\" />\n";
+    }
 }

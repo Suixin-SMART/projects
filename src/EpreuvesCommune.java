@@ -46,4 +46,9 @@ public class EpreuvesCommune{
             return "    " + tempEpreuve1.toString() + "\n    " + tempEpreuve2.toString() + "\n";
         }
     }
+
+    public String toStringXML(){
+        //<epreuvesCommune idEpreuve1="Graph" idEpreuve2="GL" />
+        return "        <epreuvesCommune idEpreuve1=\"" + epreuve1.getName() + "\" idEpreuve2=\"" + epreuve2.getName() + "\" />\n";
+    }
 }

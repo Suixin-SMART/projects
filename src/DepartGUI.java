@@ -67,12 +67,12 @@ public class DepartGUI extends Application {
                 //split Analyse=.(50,.(55,.(1,[]))) in an array [Analyse, 50, 55,1]
                 t = input[i].substring(0,input[i].length() - 6).split("=.\\(|,.\\(|,\\[\\]\\)\\)\\)");
                 t[0] = t[0].substring(1);
-                System.out.println(t[0] + " " + t[1] + " " + t[2] + " " + t[3]);
+                //System.out.println(t[0] + " " + t[1] + " " + t[2] + " " + t[3]);
                 tmp = epreuves.get(Integer.parseInt(t[0]));
                 tmp.setDebut(Integer.parseInt(t[1]));
                 tmp.setFin(Integer.parseInt(t[2]));
-                tmp.setSalle(Integer.parseInt(t[3]));
-                System.out.println(tmp);
+                tmp.setSalle(salles.get(Integer.parseInt(t[3])));
+                //System.out.println(tmp);
             }
         }
     }
@@ -96,7 +96,7 @@ public class DepartGUI extends Application {
         return "file:" + path;
     }
 
-    public String toString(){
+    public String generateFileProlog(int horaireOuverture, int horaireFermeture){
         String tmpEpreuves = "", tmpListEpreuves = "", listTasks="", listSalles = "";
 
         boolean first = true;
@@ -217,8 +217,17 @@ public class DepartGUI extends Application {
                 "        Total = " + tmpListEpreuves + ",\n" +
                 "\n" +
                 "        % Déclaration du lundi 0h au vendredi 23h59 par 1/2 heure (48 points par jour).\n" +
-                "        domain(Total, 0, 480),\n"+
-                "Tasks = [\n" + listTasks + "],\n"+
+                "        domain(Total, 0, 480),\n\n";
+
+        for(Map.Entry<Integer, Epreuve> e : epreuves.entrySet()) {
+            text += "S" + e.getValue().getId() + " #>= " + horaireOuverture + " #/\\ E" + e.getValue().getId() + "#=< " + horaireFermeture + "\n" +
+                    "#\\ S" + e.getValue().getId() + " #>= " + (horaireOuverture + 96)+ " #/\\ E" + e.getValue().getId() + "#=< " + (horaireFermeture + 96) + "\n" +
+                    "#\\ S" + e.getValue().getId() + " #>= " + (horaireOuverture + 192) + " #/\\ E" + e.getValue().getId() + "#=< " + (horaireFermeture + 192) + "\n" +
+                    "#\\ S" + e.getValue().getId() + " #>= " + (horaireOuverture + 288) + " #/\\ E" + e.getValue().getId() + "#=< " + (horaireFermeture + 288) + "\n" +
+                    "#\\ S" + e.getValue().getId() + " #>= " + (horaireOuverture + 384) + " #/\\ E" + e.getValue().getId() + "#=< " + (horaireFermeture + 384) + ",\n";
+        }
+
+        text += "Tasks = [\n" + listTasks + "],\n"+
                 "append(Tasks, ListeTasksSallesPrises, NewTasks),\n";
 
         for (EpreuvesCommune e : epreuvesCommunes ) {
@@ -255,7 +264,7 @@ public class DepartGUI extends Application {
                 "\n      append(Total, " + listSalles + ", Vars),\n" +
                 "\n" +
                 "        statistics(runtime, [T0| _]),\n" +
-                "        labeling([minimize(ToMinimize), most_constrained, time_out( TimeOut, _LabelingResult)], Vars),\n" +
+                "        labeling([minimize(ToMinimize), time_out( TimeOut, _LabelingResult)], Vars),\n" +
                 "        statistics(runtime, [T1|_]),\n" +
                 "        TLabelling is T1 - T0,\n" +
                 "        format('labeling took ~3d sec.~n', [TLabelling]).\n" +
@@ -271,7 +280,8 @@ public class DepartGUI extends Application {
         return text;
     }
 
-    public void callSicstus(String inputFile, int prioriteSalle, int prioriteDuree, int prioriteDist, int tOut, int dTime, String outputFile){
+    public void callSicstus(String inputFile, int prioriteSalle, int prioriteDuree,
+                            int prioriteDist, int tOut, int dTime, String outputFile){
         SICStus sp = null;
         HashMap results;
 
@@ -414,6 +424,75 @@ public class DepartGUI extends Application {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    public String generateXML(){
+        String tmp = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<!DOCTYPE optimisation [\n" +
+                "        <!ELEMENT optimisation (regroupements,epreuves,salles,epreuvesAyantDesEtudiantsEnCommun)>\n" +
+                "        <!ELEMENT regroupements (regroupement)*>\n" +
+                "        <!ELEMENT regroupement (matiere)*>\n" +
+                "        <!ATTLIST regroupement\n" +
+                "                name              ID       #REQUIRED\n" +
+                "                >\n" +
+                "        <!ELEMENT matiere EMPTY>\n" +
+                "        <!ATTLIST matiere\n" +
+                "                name              IDREF       #REQUIRED\n" +
+                "                nbEtudiants       CDATA       #REQUIRED\n" +
+                "                >\n" +
+                "        <!ELEMENT epreuves (epreuve)*>\n" +
+                "        <!ELEMENT epreuve EMPTY>\n" +
+                "        <!ATTLIST epreuve\n" +
+                "                name             ID          #REQUIRED\n" +
+                "                nbEtudiants      CDATA       #REQUIRED\n" +
+                "                jour             CDATA\t    #IMPLIED\n" +
+                "                heureDebut       CDATA       #IMPLIED\n" +
+                "                duree            CDATA       #REQUIRED\n" +
+                "                heureFin         CDATA       #IMPLIED\n" +
+                "                salle            IDREF       #IMPLIED\n" +
+                "                >\n" +
+                "        <!ELEMENT salles (salle)*>\n" +
+                "        <!ELEMENT salle (creneau-occupe)*>\n" +
+                "        <!ATTLIST salle\n" +
+                "                name             ID          #REQUIRED\n" +
+                "                capacite         CDATA       #REQUIRED\n" +
+                "                >\n" +
+                "        <!ELEMENT epreuvesAyantDesEtudiantsEnCommun (epreuvesCommune)*>\n" +
+                "        <!ELEMENT epreuvesCommune EMPTY>\n" +
+                "        <!ATTLIST epreuvesCommune\n" +
+                "                idEpreuve1      IDREF       #REQUIRED\n" +
+                "                idEpreuve2      IDREF       #REQUIRED\n" +
+                "                >\n" +
+                "        <!ELEMENT creneau-occupe EMPTY>\n" +
+                "        <!ATTLIST creneau-occupe\n" +
+                "                jour            CDATA  \t  #REQUIRED\n" +
+                "                debut           CDATA       #REQUIRED\n" +
+                "                fin             CDATA       #REQUIRED\n" +
+                "                >\n" +
+                "        ]>\n" +
+                "<optimisation>\n" +
+                "  <regroupements>\n";
+        for (Regroupement r : regroupements ) {
+            tmp += r.toStringXML();
+        }
+        tmp += "    </regroupements>\n" +
+                "    <epreuves>\n";
+        for(Map.Entry<Integer, Epreuve> entry : epreuves.entrySet()) {
+            tmp += entry.getValue().toStringXML();
+        }
+        tmp += "    </epreuves>\n" +
+                "   <salles>\n";
+        for(Map.Entry<Integer, Salle> entry : salles.entrySet()) {
+            tmp += entry.getValue().toStringXML();
+        }
+        tmp += "    </salles>\n" +
+                "   <epreuvesAyantDesEtudiantsEnCommun>\n";
+        for (EpreuvesCommune e: epreuvesCommunes) {
+            tmp += e.toStringXML();
+        }
+        tmp += "    </epreuvesAyantDesEtudiantsEnCommun>\n" +
+                "</optimisation>";
+        return tmp;
     }
 
 }

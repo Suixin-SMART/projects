@@ -1,22 +1,27 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Salle{
     private String name;
     private int id;
     private int capacite;
-    private ArrayList<Creneau> creneaux;
+    private HashMap<Integer,Creneau> creneaux;
     static int nbTotal = 0;
+    private int nbCreneaux;
 
     public Salle(String name, int capacite){
         this.name = name;
         this.capacite = capacite;
-        creneaux = new ArrayList<Creneau>();
+        creneaux = new HashMap<>();
         nbTotal++;
         id = nbTotal;
+        nbCreneaux = 0;
     }
 
     public void addCreneau(int jour, int debut, int fin){
-        creneaux.add(new Creneau(jour, debut, fin));
+        nbCreneaux++;
+        creneaux.put(nbCreneaux,new Creneau(jour, debut, fin));
     }
 
     public String toString(){
@@ -24,20 +29,43 @@ public class Salle{
         String text = "[ \"" + name + "\", " + capacite + ", [";
 
         int i = 1;
-        for (Creneau e : creneaux) {
-            if (creneaux.size() == i){
-                text += "[" + e.toString() + "]";
-            }else{
-                text += "[" + e.toString() + "],";
+        if (!creneaux.isEmpty()) {
+            for(Map.Entry<Integer, Creneau> entry : creneaux.entrySet()) {
+                if (creneaux.size() == i) {
+                    text += "[" + entry.getValue().toString() + "]";
+                } else {
+                    text += "[" + entry.getValue().toString() + "],";
+                }
+                i++;
             }
-            i++;
+        }else{
+            text+= "";
         }
         text += "]]";
+
 
         return text;
     }
 
+    public String toStringXML(){
+        //<salle name="Amphi_A" capacite="94">
+        if (creneaux.size() == 0){
+            return "        <salle name=\"" + name + "\" capacite=\"" + capacite + "\"/>\n";
+        }else{
+            String tmp = "      <salle name=\"" + name + "\" capacite=\"" + capacite + "\">\n";
+            for(Map.Entry<Integer, Creneau> entry : creneaux.entrySet()) {
+                tmp += entry.getValue().toStringXML();
+            }
+            tmp += "        </salle>\n";
+            return tmp;
+        }
+    }
+
     public int getId(){
         return id;
+    }
+
+    public String getName(){
+        return name;
     }
 }
