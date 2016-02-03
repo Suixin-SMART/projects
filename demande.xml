@@ -58,16 +58,16 @@
     </regroupement>
   </regroupements>
   <epreuves>
-    <epreuve name="Graph" nbEtudiants="54" duree="4" />
-    <epreuve name="GL" nbEtudiants="54" duree="3" />
-    <epreuve name="MICA" nbEtudiants="54" duree="74" />
-    <epreuve name="COMP" nbEtudiants="54" duree="6" />
-    <epreuve name="RESO" nbEtudiants="54" duree="3" />
+    <epreuve name="Graph" nbEtudiants="54" duree="8" />
+    <epreuve name="GL" nbEtudiants="54" duree="6" />
+    <epreuve name="MICA" nbEtudiants="54" duree="8" />
+    <epreuve name="COMP" nbEtudiants="54" duree="12" />
+    <epreuve name="RESO" nbEtudiants="54" duree="6" />
 
-    <epreuve name="Analyse" nbEtudiants="30" duree="5" />
-    <epreuve name="Physique" nbEtudiants="30" duree="6" />
-    <epreuve name="Anglais" nbEtudiants="30" duree="8" />
-    <epreuve name="Electronique" nbEtudiants="30" duree="3" />
+    <epreuve name="Analyse" nbEtudiants="30" duree="10" />
+    <epreuve name="Physique" nbEtudiants="30" duree="12" />
+    <epreuve name="Anglais" nbEtudiants="30" duree="16" />
+    <epreuve name="Electronique" nbEtudiants="30" duree="6" />
   </epreuves>
   <salles>
     <salle name="Amphi_A" capacite="94"/>

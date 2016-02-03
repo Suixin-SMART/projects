@@ -22,13 +22,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-/**
- * Created by nomce on 3/7/14.
- */
 public class DepartGUI extends Application {
     private HashMap<Integer,Epreuve> epreuves;
     private HashMap<Integer,Salle> salles;
@@ -97,6 +92,32 @@ public class DepartGUI extends Application {
     }
 
     public String generateFileProlog(int horaireOuverture, int horaireFermeture){
+
+        TreeSet<TreeSet<Epreuve>> superset = new TreeSet<TreeSet<Epreuve>>();
+        for (EpreuvesCommune e : epreuvesCommunes) {
+            TreeSet<Epreuve> t1 = e.getEpreuve(1).getTreeSet();
+            TreeSet<Epreuve> t2 = e.getEpreuve(2).getTreeSet();
+            if (!t1.equals(t2))
+            {
+                if (t1.size() < t2.size())
+                {
+                    e.getEpreuve(2).fusionEnsemble(t1);
+                }
+                else
+                {
+                    e.getEpreuve(1).fusionEnsemble(t2);
+                }
+
+            }
+        }
+
+        for(Map.Entry<Integer, Epreuve> tmpEpreve : epreuves.entrySet())
+        {
+            //superset.add(tmpEpreve.getValue().getTreeSet());
+        }
+        //System.out.println(superset);
+
+
         String tmpEpreuves = "", tmpListEpreuves = "", listTasks="", listSalles = "";
 
         boolean first = true;
@@ -159,7 +180,15 @@ public class DepartGUI extends Application {
                 "        #\\ ((Fin1 - Debut1 #= Fin2 - Debut2) #/\\ (Salle1 #\\= Salle2))\n" +
                 "        #\\ ((Fin1 - Debut1 #\\= Fin2 - Debut2) #/\\ (Salle1 #= Salle2) #/\\ ((Fin1 #=< Debut2) #\\ (Fin2 #=< Debut1)))\n" +
                 "        #\\ ((Fin1 - Debut1 #\\= Fin2 - Debut2) #/\\ (Salle1 #\\= Salle2)).\n" +
-                "\n" +
+                "\n\n" +
+
+                "espacementSalle(Salle1, Debut1, Fin1, Salle2, Debut2, Fin2, DeltaTime):-\n" +
+                "        (Salle1 #\\= Salle2)\n" +
+                //"        #\\ (Salle1 #= Salle2).\n\n"+
+                "        #\\/ ((Salle1 #= Salle2) #/\\ (Debut1 #= Debut2) #/\\ (Fin1 #= Fin2))\n" +
+                "        #\\/ ((Salle1 #= Salle2) #/\\ (DeltaTime #=< (Debut1 - Fin2)))\n"+
+                "        #\\/ ((Salle1 #= Salle2) #/\\ (DeltaTime #=< (Debut2 - Fin1))).\n\n"+
+
                 "compteNombreFoisSalleUtilisee(_Salle, _Debut, _Fin, [], Counter, Counter):-!.\n" +
                 "compteNombreFoisSalleUtilisee(Salle1, Debut1, Fin1, [task(Debut2, _Duree2, Fin2, _Effectif2, Salle2) | ListeTask], Counter, Result):-\n" +
                 "        (Salle1 #= Salle2 #/\\ Debut1 #= Debut2 #/\\ Fin1 #= Fin2 #/\\ NewCounter #= Counter + 1)\n" +
@@ -234,6 +263,12 @@ public class DepartGUI extends Application {
             text += "incompatible(S" + e.getEpreuve(1).getId() + ",E" + e.getEpreuve(1).getId() + ",S"+ e.getEpreuve(2).getId() + ",E" + e.getEpreuve(2).getId() + ", DeltaTime),\n";
         }
 
+        for(Map.Entry<Integer, Epreuve> e1 : epreuves.entrySet()) {
+            for(Map.Entry<Integer, Epreuve> e2 : epreuves.entrySet()) {
+                if (e1.getValue().getId() < e2.getValue().getId())
+                   text += "espacementSalle(Salle" + e1.getValue().getId() + ",S" + e1.getValue().getId()  + ",E" + e1.getValue().getId() + ",Salle" + e2.getValue().getId() + ",S" + e2.getValue().getId()  + ",E" + e2.getValue().getId() + ", DeltaTime),\n";
+            }
+        }
 
            text += "        generationClausesExamensCompatiblesEnDuree(Tasks),\n" +
                     "\n" +

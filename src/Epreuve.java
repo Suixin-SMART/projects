@@ -1,6 +1,9 @@
-import java.util.HashMap;
+import sun.reflect.generics.tree.Tree;
 
-public class Epreuve{
+import java.util.HashMap;
+import java.util.TreeSet;
+
+public class Epreuve implements Comparable<Epreuve>{
     private String name;
     private int nbEtudiants;
     private int debut;
@@ -10,6 +13,7 @@ public class Epreuve{
     private int id;
     private Salle salle;
     private int salleTemp;
+    private TreeSet<Epreuve> treeEpreuve;
 
     public Epreuve(int id, String name, int nb, int jour, int debut, int duree, int fin, int salle){
         this.name = name;
@@ -20,10 +24,16 @@ public class Epreuve{
         this.fin = fin;
         this.id = id;
         this.salleTemp = salle;
+        treeEpreuve = new TreeSet<Epreuve>();
+        treeEpreuve.add(this);
     }
 
     public String toString(){
-        return "Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin + " Salle: " + salle.getName();
+        if (salle == null){
+            return "Id : " + id;//"Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin + " Salle: " + salleTemp;
+        }else {
+            return "Name: " + name + " NbEtud: " + nbEtudiants + " Jour: " + jour + " Debut: " + debut + " Duree: " + duree + " Fin: " + fin + " Salle: " + salle.getName();
+        }
     }
 
     public void setSalleAfter(HashMap<Integer,Salle> salles){
@@ -103,5 +113,24 @@ public class Epreuve{
 
         tmp += "/>\n";
         return tmp;
+    }
+
+    public void setTreeSet(TreeSet<Epreuve> input){
+        treeEpreuve = input;
+    }
+
+    public TreeSet<Epreuve> getTreeSet(){
+        return treeEpreuve;
+    }
+
+    public void fusionEnsemble(TreeSet<Epreuve> input){
+        treeEpreuve.addAll(input);
+        for (Epreuve e: input) {
+            e.setTreeSet(treeEpreuve);
+        }
+    }
+
+    public int compareTo(Epreuve input){
+        return id - input.id;
     }
 }
