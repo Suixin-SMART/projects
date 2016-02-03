@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <TableView fx:id="tView" editable="true" prefHeight="800.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columns>
+            <TableColumn fx:id="salleCol" prefWidth="150.0" text="Amphi/salle" />
+            <TableColumn fx:id="lundiCol" prefWidth="90.0" text="Lundi" />
+          <TableColumn fx:id="mardiCol" prefWidth="90.0" text="Mardi" />
+          <TableColumn fx:id="mercrediCol" prefWidth="90.0" text="Mercredi" />
+            <TableColumn fx:id="jeudiCol" prefWidth="90.0" text="Jeudi" />
+            <TableColumn fx:id="vendrediCol" prefWidth="90.0" text="Vendredi" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

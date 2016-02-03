@@ -1,3 +1,4 @@
+import javafx.beans.property.SimpleStringProperty;
 import sun.reflect.generics.tree.Tree;
 
 import java.util.HashMap;
@@ -15,8 +16,11 @@ public class Epreuve implements Comparable<Epreuve>{
     private int salleTemp;
     private TreeSet<Epreuve> treeEpreuve;
 
+    private SimpleStringProperty namePublic, sallePublic;
+
     public Epreuve(int id, String name, int nb, int jour, int debut, int duree, int fin, int salle){
         this.name = name;
+        namePublic = new SimpleStringProperty(name);
         this.nbEtudiants = nb;
         this.jour = jour;
         this.debut = debut;
@@ -88,6 +92,7 @@ public class Epreuve implements Comparable<Epreuve>{
 
     public void setSalle(Salle s){
         this.salle = s;
+        sallePublic = new SimpleStringProperty(salle.getName());
     }
 
     public String toStringXML(){
@@ -132,5 +137,9 @@ public class Epreuve implements Comparable<Epreuve>{
 
     public int compareTo(Epreuve input){
         return id - input.id;
+    }
+
+    public String getSalleName(){
+        return salle.getName();
     }
 }

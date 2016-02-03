@@ -55,6 +55,11 @@ public class DepartGUI extends Application {
         /* END XML Parser */
     }
 
+    /**
+     * Convertir le sortie du prolog en objet Epreuve.
+     * Remplir les objets deja crees avec les donnees calculees (debut, fin, salle)
+     * @param input     la liste de lignes du fichier prolog en tableau de Strings
+     */
     public void addTimetable(String[] input) {
         String[] t;
         Epreuve tmp;
@@ -63,16 +68,20 @@ public class DepartGUI extends Application {
                 //split Analyse=.(50,.(55,.(1,[]))) in an array [Analyse, 50, 55,1]
                 t = input[i].substring(0,input[i].length() - 6).split("=.\\(|,.\\(|,\\[\\]\\)\\)\\)");
                 t[0] = t[0].substring(1);
-                //System.out.println(t[0] + " " + t[1] + " " + t[2] + " " + t[3]);
+                //remplir l'objet Epreuve avec les donneess du prolog
                 tmp = epreuves.get(Integer.parseInt(t[0]));
                 tmp.setDebut(Integer.parseInt(t[1]));
                 tmp.setFin(Integer.parseInt(t[2]));
                 tmp.setSalle(salles.get(Integer.parseInt(t[3])));
-                //System.out.println(tmp);
             }
         }
     }
 
+    /**
+     * Lire un fichier du disk
+     * @param path      le nom du fichier
+     * @param encoding  son enconding
+     */
     public static String readFile(String path, Charset encoding)
             throws IOException
     {
@@ -80,6 +89,10 @@ public class DepartGUI extends Application {
         return new String(encoded, encoding);
     }
 
+    /**
+     * Obtenir le chemin absolut d'un fichier
+     * @param filename  chemin relatif du fichier
+     */
     private static String convertToFileURL(String filename) {
         String path = new File(filename).getAbsolutePath();
         if (File.separatorChar != '/') {
@@ -92,9 +105,14 @@ public class DepartGUI extends Application {
         return "file:" + path;
     }
 
-    public String generateFileProlog(int horaireOuverture, int horaireFermeture, int debutRepas, int finRepas, int dureeRepas){
 
-        HashMap<Integer,TreeSet<Epreuve>> superMap = new HashMap<Integer,TreeSet<Epreuve>>();
+    /**
+     * Generer le fichier prolog qui va etre utilisée par la fonction callSicstus
+     */
+    public String generateFileProlog(int horaireOuverture, int horaireFermeture, int debutRepas,
+                                     int finRepas, int dureeRepas){
+
+        HashMap<Integer,TreeSet<Epreuve>> superMap = new HashMap<>();
         for (EpreuvesCommune e : epreuvesCommunes) {
             TreeSet<Epreuve> t1 = e.getEpreuve(1).getTreeSet();
             TreeSet<Epreuve> t2 = e.getEpreuve(2).getTreeSet();
@@ -493,33 +511,6 @@ public class DepartGUI extends Application {
         launch(args);
     }
 
-    public static void openWebpage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            Runtime runtime = Runtime.getRuntime();
-            try {
-               runtime.exec("xdg-open " + uri);
-            } catch (IOException e) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-        }
-    }
-
-    public static void openWebpage(URL url) {
-        try {
-            openWebpage(url.toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String generateXML(){
         String tmp = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<!DOCTYPE optimisation [\n" +
@@ -589,4 +580,19 @@ public class DepartGUI extends Application {
         return tmp;
     }
 
+    public HashMap<Integer,Epreuve> getEpreuves(){
+        return epreuves;
+    }
+
+    public HashMap<Integer, Salle> getSalles() {
+        return salles;
+    }
+
+    public ArrayList<EpreuvesCommune> getEpreuvesCommunes() {
+        return epreuvesCommunes;
+    }
+
+    public ArrayList<Regroupement> getRegroupements() {
+        return regroupements;
+    }
 }
