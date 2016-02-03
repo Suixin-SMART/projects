@@ -336,13 +336,12 @@
       <creneau-occupe jour="5" debut="0" fin="48"/>
     </salle>
     <salle name="B7" capacite="100" />
-    <salle name="B1" capacite="80" />
-    <salle name="Croisot" capacite="20" />
+    <salle name="B1" capacite="100" />
+    <salle name="Croisot" capacite="100" />
     <salle name="SalleDePlus" capacite="100" />
     <salle name="Croiot" capacite="100" />
     <salle name="Crot" capacite="100" />
-    <salle name="Croot" capacite="100" />
-    <salle name="SalleePlus" capacite="100" />
+    <salle name="Crotte" capacite="100" />
 
   </salles>
   <epreuvesAyantDesEtudiantsEnCommun>

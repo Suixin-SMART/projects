@@ -16,6 +16,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InterfaceAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -91,9 +92,9 @@ public class DepartGUI extends Application {
         return "file:" + path;
     }
 
-    public String generateFileProlog(int horaireOuverture, int horaireFermeture){
+    public String generateFileProlog(int horaireOuverture, int horaireFermeture, int debutRepas, int finRepas, int dureeRepas){
 
-        TreeSet<TreeSet<Epreuve>> superset = new TreeSet<TreeSet<Epreuve>>();
+        HashMap<Integer,TreeSet<Epreuve>> superMap = new HashMap<Integer,TreeSet<Epreuve>>();
         for (EpreuvesCommune e : epreuvesCommunes) {
             TreeSet<Epreuve> t1 = e.getEpreuve(1).getTreeSet();
             TreeSet<Epreuve> t2 = e.getEpreuve(2).getTreeSet();
@@ -111,17 +112,25 @@ public class DepartGUI extends Application {
             }
         }
 
+
+        int b = 1;
         for(Map.Entry<Integer, Epreuve> tmpEpreve : epreuves.entrySet())
         {
-            //superset.add(tmpEpreve.getValue().getTreeSet());
-        }
-        //System.out.println(superset);
+            if (!superMap.containsValue(tmpEpreve.getValue().getTreeSet())){
+                superMap.put(b,tmpEpreve.getValue().getTreeSet());
+                b++;
+            }
 
+        }
 
         String tmpEpreuves = "", tmpListEpreuves = "", listTasks="", listSalles = "";
 
+        String tmpContrainteEpreuvesNonRepas = "";
+
         boolean first = true;
         for(Map.Entry<Integer, Epreuve> tmpEpreuve : epreuves.entrySet()) {
+
+            tmpContrainteEpreuvesNonRepas += "Salle" + tmpEpreuve.getValue().getId() + " #\\= SalleRepas,\n";
 
             //tasks
             listTasks = listTasks + "task(";
@@ -154,7 +163,7 @@ public class DepartGUI extends Application {
                 }else{
                     tmpListEpreuves =  "["+tmpEpreuve.getValue().getStart()+ ","+tmpEpreuve.getValue().getEnd();
                 }
-                listSalles = "[Salle"+tmpEpreuve.getValue().getId();
+                listSalles = "[SalleRepas,Salle"+tmpEpreuve.getValue().getId();
                 first = false;
             }else{
                 if (tmpEpreuve.getValue().getStart()<0){
@@ -256,8 +265,57 @@ public class DepartGUI extends Application {
                     "#\\ S" + e.getValue().getId() + " #>= " + (horaireOuverture + 384) + " #/\\ E" + e.getValue().getId() + "#=< " + (horaireFermeture + 384) + ",\n";
         }
 
-        text += "Tasks = [\n" + listTasks + "],\n"+
-                "append(Tasks, ListeTasksSallesPrises, NewTasks),\n";
+        text += "Tasks = [\n" + listTasks + "],\n";
+
+        text += "SalleRepas #= " + (Salle.getNbSalles()+1) + ",\n";
+
+        text += tmpContrainteEpreuvesNonRepas;
+
+        text += "TasksRepas=[\n";
+
+        String tmpContraintesRepas = "";
+        String tmpNameRepas = "";
+        String tmpIncompRepas = "";
+        for(Map.Entry<Integer, TreeSet<Epreuve>> e : superMap.entrySet()) {
+            text += "task(SRepas" + e.getKey() + "1," + dureeRepas + ",ERepas" + e.getKey() + "1,1,SalleRepas),\n";
+            text += "task(SRepas" + e.getKey() + "2," + dureeRepas + ",ERepas" + e.getKey() + "2,1,SalleRepas),\n";
+            text += "task(SRepas" + e.getKey() + "3," + dureeRepas + ",ERepas" + e.getKey() + "3,1,SalleRepas),\n";
+            text += "task(SRepas" + e.getKey() + "4," + dureeRepas + ",ERepas" + e.getKey() + "4,1,SalleRepas),\n";
+            text += "task(SRepas" + e.getKey() + "5," + dureeRepas + ",ERepas" + e.getKey() + "5,1,SalleRepas),\n";
+            tmpContraintesRepas += "SRepas" + e.getKey() + "1 #>= " + debutRepas + " #/\\ ERepas" + e.getKey() + "1#=< "+ finRepas +",\n";
+            tmpContraintesRepas += "SRepas" + e.getKey() + "2 #>= " + (debutRepas + 96) + " #/\\ ERepas" + e.getKey() + "2#=< "+ (finRepas + 96) +",\n";
+            tmpContraintesRepas += "SRepas" + e.getKey() + "3 #>= " + (debutRepas + 192) + " #/\\ ERepas" + e.getKey() + "3#=< "+ (finRepas + 192) +",\n";
+            tmpContraintesRepas += "SRepas" + e.getKey() + "4 #>= " + (debutRepas + 288) + " #/\\ ERepas" + e.getKey() + "4#=< "+ (finRepas + 288) +",\n";
+            tmpContraintesRepas += "SRepas" + e.getKey() + "5 #>= " + (debutRepas + 384) + " #/\\ ERepas" + e.getKey() + "5#=< "+ (finRepas + 384) +",\n";
+            tmpNameRepas += "SRepas" + e.getKey() + "1, ERepas" + e.getKey() + "1,";
+            tmpNameRepas += "SRepas" + e.getKey() + "2, ERepas" + e.getKey() + "2,";
+            tmpNameRepas += "SRepas" + e.getKey() + "3, ERepas" + e.getKey() + "3,";
+            tmpNameRepas += "SRepas" + e.getKey() + "4, ERepas" + e.getKey() + "4,";
+            tmpNameRepas += "SRepas" + e.getKey() + "5, ERepas" + e.getKey() + "5,";
+
+            for (Epreuve eppJordan: e.getValue()) {
+                tmpIncompRepas += "incompatible(S"+ eppJordan.getId() +",E"+ eppJordan.getId() +",SRepas" + e.getKey() + "1,ERepas" + e.getKey() + "1, 0),\n";
+                tmpIncompRepas += "incompatible(S"+ eppJordan.getId() +",E"+ eppJordan.getId() +",SRepas" + e.getKey() + "2,ERepas" + e.getKey() + "2, 0),\n";
+                tmpIncompRepas += "incompatible(S"+ eppJordan.getId() +",E"+ eppJordan.getId() +",SRepas" + e.getKey() + "3,ERepas" + e.getKey() + "3, 0),\n";
+                tmpIncompRepas += "incompatible(S"+ eppJordan.getId() +",E"+ eppJordan.getId() +",SRepas" + e.getKey() + "4,ERepas" + e.getKey() + "4, 0),\n";
+                tmpIncompRepas += "incompatible(S"+ eppJordan.getId() +",E"+ eppJordan.getId() +",SRepas" + e.getKey() + "5,ERepas" + e.getKey() + "5, 0),\n";
+
+            }
+
+
+        }
+        text = text.substring(0, text.length()-2);
+        tmpNameRepas = tmpNameRepas.substring(0, tmpNameRepas.length()-1);
+        text += "],\n";
+        text += tmpContraintesRepas;
+
+        text += "append(Tasks, ListeTasksSallesPrises, TasksTmp),\n";
+        text += "append(TasksTmp, TasksRepas, NewTasks),\n";
+        text += "append(Total, [" + tmpNameRepas + "], NewTotal),\n";
+
+        text += "domain(NewTotal, 0, 480),";
+
+        text += tmpIncompRepas;
 
         for (EpreuvesCommune e : epreuvesCommunes ) {
             text += "incompatible(S" + e.getEpreuve(1).getId() + ",E" + e.getEpreuve(1).getId() + ",S"+ e.getEpreuve(2).getId() + ",E" + e.getEpreuve(2).getId() + ", DeltaTime),\n";
@@ -272,7 +330,8 @@ public class DepartGUI extends Application {
 
            text += "        generationClausesExamensCompatiblesEnDuree(Tasks),\n" +
                     "\n" +
-                    "        cumulatives(NewTasks, Salles, [bound(upper), task_intervals(true)]),\n";
+                    "        append(Salles,[machine(SalleRepas,100000) | []],NewSalles),\n" +
+                   "        cumulatives(NewTasks, NewSalles, [bound(upper), task_intervals(true)]),\n\n";
 
         String dureeTotaleTableau;
         String regroupementsOptimisees = "";
@@ -296,7 +355,7 @@ public class DepartGUI extends Application {
                 "        compteNombreSallesAffectees(Tasks, 0, Result),\n" +
                 "\n" +
                 "        ToMinimize #= PriorityDuration * (" + regroupementsOptimisees.substring(0, regroupementsOptimisees.length() - 1) + ") + PrioritySalles * Result,"+// * " + /* TODO : METTRE LES DUREES DES DIFFERENTES PROMOTIONS*/
-                "\n      append(Total, " + listSalles + ", Vars),\n" +
+                "\n      append(NewTotal, " + listSalles + ", Vars),\n" +
                 "\n" +
                 "        statistics(runtime, [T0| _]),\n" +
                 "        labeling([minimize(ToMinimize), time_out( TimeOut, _LabelingResult)], Vars),\n" +

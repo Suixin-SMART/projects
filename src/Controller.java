@@ -27,12 +27,16 @@ public class Controller {
     private TextField importField,exportField,prioriteSalle,prioriteDuree,prioriteDist,timeout,deltaTime,resultField,debutMin,finMax;
     @FXML
     private Button commencerButton;
+    @FXML
+    private TextField debutRepas, finRepas, dureeRepas;
+
     DepartGUI dep;
 
     public void action() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         dep = new DepartGUI(importField.getText());
         PrintWriter out = new PrintWriter(exportField.getText());
-        out.print(dep.generateFileProlog(Integer.parseInt(debutMin.getText()),Integer.parseInt(finMax.getText())));
+        out.print(dep.generateFileProlog(Integer.parseInt(debutMin.getText()),Integer.parseInt(finMax.getText()),
+                Integer.parseInt(debutRepas.getText()),Integer.parseInt(finRepas.getText()),Integer.parseInt(dureeRepas.getText())));
         out.close();
     }
 

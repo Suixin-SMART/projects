@@ -68,4 +68,8 @@ public class Salle{
     public String getName(){
         return name;
     }
+
+    public static int getNbSalles(){
+        return nbTotal;
+    }
 }

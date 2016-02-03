@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE optimisation [
+        <!ELEMENT optimisation (regroupements,epreuves,salles,epreuvesAyantDesEtudiantsEnCommun)>
+        <!ELEMENT regroupements (regroupement)*>
+        <!ELEMENT regroupement (matiere)*>
+        <!ATTLIST regroupement
+                name              ID       #REQUIRED
+                >
+        <!ELEMENT matiere EMPTY>
+        <!ATTLIST matiere
+                name              IDREF       #REQUIRED
+                nbEtudiants       CDATA       #REQUIRED
+                >
+        <!ELEMENT epreuves (epreuve)*>
+        <!ELEMENT epreuve EMPTY>
+        <!ATTLIST epreuve
+                name             ID          #REQUIRED
+                nbEtudiants      CDATA       #REQUIRED
+                jour             CDATA	    #IMPLIED
+                heureDebut       CDATA       #IMPLIED
+                duree            CDATA       #REQUIRED
+                heureFin         CDATA       #IMPLIED
+                salle            IDREF       #IMPLIED
+                >
+        <!ELEMENT salles (salle)*>
+        <!ELEMENT salle (creneau-occupe)*>
+        <!ATTLIST salle
+                name             ID          #REQUIRED
+                capacite         CDATA       #REQUIRED
+                >
+        <!ELEMENT epreuvesAyantDesEtudiantsEnCommun (epreuvesCommune)*>
+        <!ELEMENT epreuvesCommune EMPTY>
+        <!ATTLIST epreuvesCommune
+                idEpreuve1      IDREF       #REQUIRED
+                idEpreuve2      IDREF       #REQUIRED
+                >
+        <!ELEMENT creneau-occupe EMPTY>
+        <!ATTLIST creneau-occupe
+                jour            CDATA  	  #REQUIRED
+                debut           CDATA       #REQUIRED
+                fin             CDATA       #REQUIRED
+                >
+        ]>
+<optimisation>
+  <regroupements>
+    <regroupement name="A1">
+      <matiere name="JVA1509" nbEtudiants="35" />
+      <matiere name="JVA1526" nbEtudiants="29" />
+      <matiere name="JVA1510" nbEtudiants="39" />
+      <matiere name="JVA1511" nbEtudiants="33" />
+      <matiere name="JVA1521" nbEtudiants="31" />
+      <matiere name="JVA1522" nbEtudiants="31" />
+    </regroupement>
+    <regroupement name="A2">
+      <matiere name="JVA2E600" nbEtudiants="20" />
+      <matiere name="JVA2E602" nbEtudiants="17" />
+      <matiere name="JVA2E640" nbEtudiants="18" />
+      <matiere name="JVA2E642" nbEtudiants="20" />
+      <matiere name="JVA2E604" nbEtudiants="19" />
+      <matiere name="JVA2E641" nbEtudiants="19" />
+      <matiere name="JVA2E653" nbEtudiants="17" />
+    </regroupement>
+  </regroupements>
+  <epreuves>
+    <epreuve name="JVA1509" nbEtudiants="35" duree="6" />
+    <epreuve name="JVA1526" nbEtudiants="29" duree="6" />
+    <epreuve name="JVA1510" nbEtudiants="39" duree="4" />
+    <epreuve name="JVA1511" nbEtudiants="33" duree="4" />
+    <epreuve name="JVA1521" nbEtudiants="31" duree="4" />
+    <epreuve name="JVA1522" nbEtudiants="31" duree="4" />
+
+    <epreuve name="JVA2E600" nbEtudiants="20" duree="4" />
+    <epreuve name="JVA2E602" nbEtudiants="17" duree="4" />
+    <epreuve name="JVA2E640" nbEtudiants="18" duree="4" />
+    <epreuve name="JVA2E642" nbEtudiants="20" duree="4" />
+    <epreuve name="JVA2E604" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA2E641" nbEtudiants="19" duree="4" />
+    <epreuve name="JVA2E653" nbEtudiants="17" duree="4" />
+  </epreuves>
+  <salles>
+    <salle name="B7" capacite="100" />
+    <salle name="B1" capacite="80" />
+    <salle name="SalleDePlus" capacite="100" />
+    <salle name="SalleDePs" capacite="100" />
+    <salle name="SaeDePlus" capacite="100" />
+    <salle name="SalleDePl" capacite="100" />
+  </salles>
+  <epreuvesAyantDesEtudiantsEnCommun>
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1526" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1510" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1511" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1509" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1511" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1526" idEpreuve2="JVA1510" />
+    <epreuvesCommune idEpreuve1="JVA1510" idEpreuve2="JVA1511" />
+    <epreuvesCommune idEpreuve1="JVA1510" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1510" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1511" idEpreuve2="JVA1521" />
+    <epreuvesCommune idEpreuve1="JVA1511" idEpreuve2="JVA1522" />
+    <epreuvesCommune idEpreuve1="JVA1522" idEpreuve2="JVA1521" />
+
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E602" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E640" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E642" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E600" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E640" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E642" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E602" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E642" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E640" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2E604" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E642" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2E641" />
+    <epreuvesCommune idEpreuve1="JVA2E604" idEpreuve2="JVA2E653" />
+    <epreuvesCommune idEpreuve1="JVA2E641" idEpreuve2="JVA2E653" />
+  </epreuvesAyantDesEtudiantsEnCommun>
+</optimisation>

@@ -10,7 +10,7 @@
 
 <GridPane alignment="center" hgap="10" prefHeight="270.0" prefWidth="666.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
-      <TextField fx:id="importField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour importer" text="demande.xml" />
+      <TextField fx:id="importField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour importer" text="demandeMidi.xml" />
       <TextField fx:id="exportField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour exporter" text="output.pro" GridPane.columnIndex="1" />
       <Button fx:id="commencerButton" mnemonicParsing="false" onAction="#action" text="Action!" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       <Button fx:id="prologButton" mnemonicParsing="false" onAction="#action2" text="Prolog" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -24,6 +24,9 @@
       <TextField fx:id="resultField" promptText="Fichier resultat" text="result" GridPane.columnIndex="2" />
       <TextField fx:id="debutMin" promptText="DebutMin" text="32" GridPane.rowIndex="2" GridPane.columnIndex="2"  />
       <TextField fx:id="finMax" promptText="FinMax" text="80" GridPane.rowIndex="3" GridPane.columnIndex="2" />
+      <TextField fx:id="debutRepas" promptText="Debut Repas" text="46" GridPane.rowIndex="4" GridPane.columnIndex="2" />
+      <TextField fx:id="finRepas" promptText="Fin repas" text="54" GridPane.rowIndex="5" GridPane.columnIndex="2"  />
+      <TextField fx:id="dureeRepas" promptText="Duree du repas" text="3" GridPane.rowIndex="6" GridPane.columnIndex="2" />
    </children>
    <columnConstraints>
       <ColumnConstraints />
