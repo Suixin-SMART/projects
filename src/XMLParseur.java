@@ -23,15 +23,29 @@ public class XMLParseur extends DefaultHandler{
     private Regroupement regroupement;
     private int nbEpreuves = 1;
 
+    /**
+     * getter for HashMap des Epreuves
+     * @return HashMap des Epreuves
+     */
     public HashMap<Integer,Epreuve> getEpreuves(){
         for(Map.Entry<Integer, Epreuve> entry : epreuves.entrySet()) {
             entry.getValue().setSalleAfter(salles);
         }
         return epreuves;
     }
+
+    /**
+     * getter for HashMap des Salles
+     * @return HashMap des Salles
+     */
     public HashMap<Integer,Salle> getSalles(){
         return salles;
     }
+
+    /**
+     * getter for ArrayList des EpreuvesCommunes
+     * @return ArrayList des EpreuvesCommunes
+     */
     public ArrayList<EpreuvesCommune> getEpreuvesCommunes(){
 
         for(EpreuvesCommune e : epreuvesCommunes) {
@@ -40,6 +54,10 @@ public class XMLParseur extends DefaultHandler{
         return epreuvesCommunes;
     }
 
+    /**
+     * getter for ArrayList des Regroupements
+     * @return ArrayList des Regroupements
+     */
     public ArrayList<Regroupement> getRegroupements(){
 
         for(Regroupement e : regroupements) {

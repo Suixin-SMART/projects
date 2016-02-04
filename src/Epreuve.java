@@ -78,8 +78,8 @@ public class Epreuve implements Comparable<Epreuve>{
     }
 
     public void setDebut(int debut){
-        jour = (debut / 96) % 5 +1;
-        this.debut = debut - 96 * (jour-1);
+        jour = (debut / 96) % 5 + 1;
+        this.debut = debut - 96 * (jour - 1);
     }
 
     public void setFin(int fin){
@@ -128,6 +128,11 @@ public class Epreuve implements Comparable<Epreuve>{
         return treeEpreuve;
     }
 
+    /**
+     * Fusioner deux TreeSets avec les données compatibles.
+     * Le premier TreeSet va avoir les donnees de deux TreeSets, et le second va etre detruit.
+     * @param input
+     */
     public void fusionEnsemble(TreeSet<Epreuve> input){
         treeEpreuve.addAll(input);
         for (Epreuve e: input) {

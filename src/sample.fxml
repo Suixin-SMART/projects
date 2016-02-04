@@ -8,32 +8,57 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="10" prefHeight="270.0" prefWidth="666.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
-      <TextField fx:id="importField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour importer" text="demandeExcel.xml" />
-      <TextField fx:id="exportField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour exporter" text="output.pro" GridPane.columnIndex="1" />
-      <Button fx:id="commencerButton" mnemonicParsing="false" onAction="#action" text="Action!" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <Button fx:id="prologButton" mnemonicParsing="false" onAction="#action2" text="Prolog" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-      <Button fx:id="finButton" mnemonicParsing="false" onAction="#action3" text="Fin" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <TextField fx:id="prioriteSalle" promptText="Priorite salle (0.. intMax) - def = 0" text="0" GridPane.rowIndex="2" />
-      <TextField fx:id="prioriteDuree" promptText="Priorite duree (0.. intMax)  - def = 1" text="1" GridPane.rowIndex="3" />
-      <TextField fx:id="prioriteDist" promptText="Priorite distance (0.. intMax)  - def = 0" text="0" GridPane.rowIndex="4" />
-      <TextField fx:id="timeout" promptText="Timeout (0.. intMax)  - def = 60000" text="60000" GridPane.rowIndex="5" />
-      <TextField fx:id="deltaTime" promptText="Delta time (0.. intMax) - def = 1" text="1" GridPane.rowIndex="6" />
-      <Label text="Priorites" GridPane.rowIndex="1" />
-      <TextField fx:id="resultField" promptText="Fichier resultat" text="resultExcel" GridPane.columnIndex="2" />
-      <TextField fx:id="debutMin" promptText="DebutMin" text="32" GridPane.rowIndex="2" GridPane.columnIndex="2"  />
-      <TextField fx:id="finMax" promptText="FinMax" text="80" GridPane.rowIndex="3" GridPane.columnIndex="2" />
-      <TextField fx:id="debutRepas" promptText="Debut Repas" text="46" GridPane.rowIndex="4" GridPane.columnIndex="2" />
-      <TextField fx:id="finRepas" promptText="Fin repas" text="54" GridPane.rowIndex="5" GridPane.columnIndex="2"  />
-      <TextField fx:id="dureeRepas" promptText="Duree du repas" text="3" GridPane.rowIndex="6" GridPane.columnIndex="2" />
+      <TextField fx:id="importField" prefHeight="25.0" prefWidth="400.0" promptText="Nom du fichier pour importer" text="demandeExcel.xml" GridPane.rowIndex="1" />
+      <TextField fx:id="exportField" prefHeight="25.0" prefWidth="279.0" promptText="Nom du fichier pour exporter" text="output.pro" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="resultField" prefHeight="26.0" prefWidth="335.0" promptText="Fichier resultat" text="resultExcel" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+      <Button fx:id="commencerButton" mnemonicParsing="false" onAction="#action" text="Parse and Generate!" GridPane.rowIndex="9" />
+      <Button fx:id="prologButton" mnemonicParsing="false" onAction="#action2" text="Launch Prolog" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+      <Button fx:id="finButton" mnemonicParsing="false" onAction="#action3" text="Export data" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+
+      <Label text="Priorites" GridPane.rowIndex="2" />
+      <Label text="Priorite salle" GridPane.rowIndex="3" />
+      <Label text="Priorite durée" GridPane.rowIndex="4" />
+      <Label text="Priorite distance" GridPane.rowIndex="5" />
+      <Label text="Timeout (en ms)" GridPane.rowIndex="6" />
+      <Label text="Delta Time (en 1/4h)" GridPane.rowIndex="7" />
+
+      <Label text="Début Min (en 1/4h)" GridPane.columnIndex="3" GridPane.rowIndex="3" prefHeight="15.0" />
+      <Label text="Fin Max (en 1/4h)" GridPane.columnIndex="3" GridPane.rowIndex="4" prefHeight="15.0" />
+      <Label text="Début Repas (en 1/4h)" GridPane.columnIndex="3" GridPane.rowIndex="5" prefHeight="15.0" />
+      <Label text="Fin Repas (en 1/4h)" GridPane.columnIndex="3" GridPane.rowIndex="6" prefHeight="15.0" />
+      <Label text="Durée Repas (en 1/4h)" GridPane.columnIndex="3" GridPane.rowIndex="7" prefHeight="15.0" />
+
+
+      <TextField fx:id="prioriteSalle" prefHeight="26.0" prefWidth="176.0" promptText="Priorite salle" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <TextField fx:id="prioriteDuree" promptText="Priorite duree" text="1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <TextField fx:id="prioriteDist" promptText="Priorite distance" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <TextField fx:id="timeout" promptText="Timeout" text="60000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <TextField fx:id="deltaTime" promptText="Delta time" text="1" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+      <TextField fx:id="debutMin" promptText="DebutMin" text="32" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <TextField fx:id="finMax" promptText="FinMax" text="80" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+      <TextField fx:id="debutRepas" promptText="Debut Repas" text="46" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+      <TextField fx:id="finRepas" promptText="Fin repas" text="54" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+      <TextField fx:id="dureeRepas" promptText="Duree du repas" text="3" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+      <Label text="Fichier d'entrée" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+      <Label text="Fichier Prolog" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+      <Label text="Fichier de sortie" GridPane.columnIndex="2" GridPane.rowIndex="0" />
    </children>
    <columnConstraints>
-      <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints />
+      <ColumnConstraints maxWidth="394.0" minWidth="214.0" prefWidth="214.0" />
+      <ColumnConstraints maxWidth="465.0" minWidth="216.0" prefWidth="216.0" />
+      <ColumnConstraints maxWidth="420.0" minWidth="174.0" prefWidth="174.0" />
+      <ColumnConstraints maxWidth="300.0" minWidth="60.0" prefWidth="150.0" />
    </columnConstraints>
    <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
       <RowConstraints />
       <RowConstraints />
       <RowConstraints />

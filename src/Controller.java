@@ -1,14 +1,8 @@
-import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.xml.sax.SAXException;
 
@@ -17,7 +11,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 public class Controller {
 
@@ -28,13 +21,16 @@ public class Controller {
     private Button commencerButton;
     @FXML
     private TextField debutRepas, finRepas, dureeRepas;
-    @FXML
-    private TableView<String> tView;
-    @FXML
-    private TableColumn<Epreuve, String> salleCol,lundiCol, mardiCol, mercrediCol, jeudiCol, vendrediCol;
 
     DepartGUI dep;
 
+    /**
+     * Action liée au bouton "Action!"
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws URISyntaxException
+     */
     public void action() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         dep = new DepartGUI(importField.getText());
         PrintWriter out = new PrintWriter(exportField.getText());
@@ -43,6 +39,14 @@ public class Controller {
         out.close();
     }
 
+    /**
+     * Action liée au bouton "Prolog"
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws URISyntaxException
+     */
+
     public void action2() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         String resultFile = resultField.getText() + ".txt";
         dep.callSicstus(exportField.getText(),Integer.parseInt(prioriteSalle.getText()),
@@ -50,6 +54,13 @@ public class Controller {
                 Integer.parseInt(timeout.getText()),Integer.parseInt(deltaTime.getText()),resultFile);
     }
 
+    /**
+     * Action liee au bouton "Fin"
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws URISyntaxException
+     */
     public void action3() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         String inputFile = resultField.getText() + ".txt";
         String outputFile = resultField.getText() + ".xml";
@@ -59,29 +70,7 @@ public class Controller {
             out.println( dep.generateXML() );
         }
 
-        //Creating tree items
-        /*TreeItem<Epreuve> childNode1 = new TreeItem<>(dep.);
-        TreeItem<Epreuve> childNode2 = new TreeItem<>("Child Node 2");
-        TreeItem<Epreuve> childNode3 = new TreeItem<>("Child Node 3");
-
-        //Creating the root element
-        final TreeItem<String> rootbla = new TreeItem<>("Root node");
-        rootbla.setExpanded(true);
-
-        //Adding tree items to the root
-        rootbla.getChildren().setAll(childNode1, childNode2, childNode3);
-        salleCol.setCellValueFactory();
-        */
-
-        final ObservableList<Epreuve> dataEpreuves = FXCollections.
-                                        observableArrayList(new ArrayList<Epreuve>(dep.getEpreuves().values()));
-        final ObservableList<Salle> dataSalles = FXCollections.
-                observableArrayList(new ArrayList<Salle>(dep.getSalles().values()));
-
-        salleCol.setCellValueFactory(new PropertyValueFactory<Epreuve,String>("sallePublic"));
-
-
-
+        //Affichage visuel dans un table
         Stage stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getResource("sample2.fxml"));
         stage.setTitle("Emploi de temps");

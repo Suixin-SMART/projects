@@ -21,6 +21,13 @@ public class Regroupement {
         matieres.add(new Matiere(name, nbEtudiants));
     }
 
+
+    /**
+     * Cette fonction est appelee apres le parsing du fichier XML en entree.
+     * Les matieres sont les pointeurs vers les epreuves, donc pour chaque matiere nous devons trouver
+     * l'epreuve correspondant
+     * @param input HashMap des epreuves
+     */
     public void matchEpreuves(HashMap<Integer,Epreuve> input){
         for (Matiere m : matieres) {
 

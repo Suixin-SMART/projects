@@ -18,6 +18,12 @@ public class EpreuvesCommune{
       tempEpreuve2 = e2;
   }
 
+    /**
+     * Cette fonction est appelee apres le parsing du fichier XML en entree.
+     * Les epreuves sont les pointeurs vers les epreuves, donc pour chaque tempEpreuve nous devons trouver
+     * l'epreuve correspondant
+     * @param epreuves HashMap des epreuves
+     */
     public void storeEpreuvesObjects(HashMap<Integer,Epreuve> epreuves){
 
         for(Map.Entry<Integer, Epreuve> entry : epreuves.entrySet()) {
